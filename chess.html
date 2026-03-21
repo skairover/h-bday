@@ -1,0 +1,1369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>90-Day Chess Training Plan: Beginner → 1200 Elo</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d0f;
+    --bg2: #141418;
+    --bg3: #1a1a20;
+    --bg4: #22222a;
+    --border: #2e2e38;
+    --text: #e8e6e1;
+    --muted: #7a7880;
+    --subtle: #4a4858;
+    --amber: #f5a623;
+    --amber-dim: #2a2010;
+    --amber-mid: #7a4f10;
+    --teal: #2dd4b8;
+    --teal-dim: #0d2520;
+    --red: #e85b5b;
+    --red-dim: #2a1010;
+    --purple: #a78bfa;
+    --purple-dim: #1e1830;
+    --green: #4ade80;
+    --green-dim: #0d2010;
+    --blue: #60a5fa;
+    --blue-dim: #0d1a2a;
+    --font-serif: 'DM Serif Display', Georgia, serif;
+    --font-sans: 'Inter', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* HEADER */
+  .header {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 40px 36px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '♟';
+    position: absolute;
+    right: 40px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 160px;
+    opacity: 0.04;
+    pointer-events: none;
+  }
+  .header-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 10px;
+  }
+  .header-title {
+    font-family: var(--font-serif);
+    font-size: clamp(28px, 5vw, 48px);
+    line-height: 1.1;
+    color: var(--text);
+    margin-bottom: 14px;
+  }
+  .header-title em {
+    color: var(--amber);
+    font-style: normal;
+  }
+  .header-sub {
+    color: var(--muted);
+    font-size: 14px;
+    max-width: 600px;
+    line-height: 1.7;
+  }
+  .header-stats {
+    display: flex;
+    gap: 24px;
+    margin-top: 28px;
+    flex-wrap: wrap;
+  }
+  .stat-pill {
+    background: var(--bg4);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 6px 16px;
+    font-size: 13px;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .stat-pill strong { color: var(--text); font-weight: 500; }
+  .stat-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--amber);
+    flex-shrink: 0;
+  }
+  .stat-dot.green { background: var(--green); }
+  .stat-dot.red { background: var(--red); }
+
+  /* MAIN LAYOUT */
+  .container { max-width: 1040px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  /* PHASE HEADER */
+  .phase-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 52px 0 24px;
+  }
+  .phase-badge {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 4px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .phase-1 .phase-badge { background: var(--red-dim); color: var(--red); border: 1px solid #5a2020; }
+  .phase-2 .phase-badge { background: var(--amber-dim); color: var(--amber); border: 1px solid #5a3010; }
+  .phase-3 .phase-badge { background: var(--green-dim); color: var(--green); border: 1px solid #1a4820; }
+  .phase-title {
+    font-family: var(--font-serif);
+    font-size: 26px;
+    color: var(--text);
+  }
+  .phase-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+  .phase-meta {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--subtle);
+    white-space: nowrap;
+  }
+
+  /* WEEK BLOCK */
+  .week-block {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  .week-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 20px;
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    user-select: none;
+  }
+  .week-header:hover { background: var(--bg4); }
+  .week-num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--subtle);
+    min-width: 48px;
+    letter-spacing: 0.1em;
+  }
+  .week-title {
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--text);
+    flex: 1;
+  }
+  .week-focus {
+    font-size: 12px;
+    color: var(--muted);
+    font-style: italic;
+  }
+  .week-chevron {
+    color: var(--subtle);
+    font-size: 12px;
+    transition: transform 0.2s;
+  }
+  .week-block.open .week-chevron { transform: rotate(90deg); }
+  .week-body {
+    display: none;
+    padding: 0 20px 20px;
+  }
+  .week-block.open .week-body { display: block; }
+
+  /* ACTION CARDS */
+  .action-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+  }
+  .action-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+  }
+  .action-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .action-icon {
+    font-size: 18px;
+    margin-top: 1px;
+    flex-shrink: 0;
+  }
+  .action-name {
+    font-weight: 500;
+    font-size: 13.5px;
+    color: var(--text);
+    flex: 1;
+    line-height: 1.4;
+  }
+  .risk-tag {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .risk-plateau   { background: var(--purple-dim); color: var(--purple); border: 1px solid #3a2860; }
+  .risk-discipline { background: var(--amber-dim); color: var(--amber); border: 1px solid var(--amber-mid); }
+  .risk-passive   { background: var(--blue-dim); color: var(--blue); border: 1px solid #1a3050; }
+  .risk-tilt      { background: var(--red-dim); color: var(--red); border: 1px solid #5a2020; }
+  .risk-skill     { background: var(--teal-dim); color: var(--teal); border: 1px solid #0d4038; }
+
+  .action-rationale {
+    font-size: 12.5px;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 10px;
+  }
+  .action-output {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--green);
+    background: var(--green-dim);
+    border: 1px solid #1a4020;
+    border-radius: 6px;
+    padding: 7px 10px;
+  }
+  .action-output span { font-weight: 500; }
+
+  /* WEEK METRICS BAR */
+  .week-metrics {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    padding: 14px 0 0;
+    border-top: 1px solid var(--border);
+    margin-top: 16px;
+  }
+  .metric-item {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .metric-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--subtle);
+  }
+  .metric-val {
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  /* DAILY SCHEDULE BLOCK */
+  .schedule-block {
+    background: var(--bg4);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-top: 12px;
+    font-size: 12.5px;
+  }
+  .schedule-title {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--subtle);
+    margin-bottom: 10px;
+  }
+  .schedule-row {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 5px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .schedule-row:last-child { border-bottom: none; }
+  .sched-time { color: var(--muted); min-width: 70px; font-family: var(--font-mono); font-size: 11px; }
+  .sched-task { color: var(--text); }
+  .sched-mins { color: var(--subtle); font-size: 11px; margin-left: auto; }
+
+  /* READINESS GATE */
+  .gate {
+    background: linear-gradient(135deg, #1a1a0a 0%, #0d1a10 50%, #0d0d1e 100%);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 36px 32px;
+    margin-top: 52px;
+    position: relative;
+    overflow: hidden;
+  }
+  .gate::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--red), var(--amber), var(--green));
+  }
+  .gate-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--amber);
+    margin-bottom: 10px;
+  }
+  .gate-title {
+    font-family: var(--font-serif);
+    font-size: 28px;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .gate-sub {
+    font-size: 13.5px;
+    color: var(--muted);
+    margin-bottom: 28px;
+  }
+  .gate-checks {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+  .gate-check {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .gate-check-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+  .gate-check-name { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 3px; }
+  .gate-check-sub { font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .gate-verdict {
+    background: var(--green-dim);
+    border: 1px solid #1a5028;
+    border-radius: 8px;
+    padding: 16px 20px;
+    font-size: 13.5px;
+    color: var(--green);
+    line-height: 1.6;
+  }
+  .gate-verdict strong { color: #6ef5a0; }
+
+  /* RISK LEGEND */
+  .legend {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+    padding: 16px 20px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .legend-dot {
+    width: 8px; height: 8px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  /* PRINCIPLES */
+  .principles {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin-bottom: 44px;
+  }
+  .principle-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 18px 16px;
+  }
+  .principle-num {
+    font-family: var(--font-mono);
+    font-size: 22px;
+    color: var(--border);
+    font-weight: 500;
+    margin-bottom: 8px;
+    line-height: 1;
+  }
+  .principle-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 5px;
+  }
+  .principle-body {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* PHASE OVERVIEW */
+  .phase-overview {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin: 32px 0 48px;
+  }
+  .phase-card {
+    border-radius: 10px;
+    padding: 20px;
+    border: 1px solid;
+    position: relative;
+  }
+  .phase-card-1 { background: var(--red-dim); border-color: #5a2020; }
+  .phase-card-2 { background: var(--amber-dim); border-color: #5a3010; }
+  .phase-card-3 { background: var(--green-dim); border-color: #1a4820; }
+  .phase-card-weeks {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+  }
+  .phase-card-1 .phase-card-weeks { color: var(--red); }
+  .phase-card-2 .phase-card-weeks { color: var(--amber); }
+  .phase-card-3 .phase-card-weeks { color: var(--green); }
+  .phase-card-name {
+    font-family: var(--font-serif);
+    font-size: 18px;
+    color: var(--text);
+    margin-bottom: 10px;
+    line-height: 1.2;
+  }
+  .phase-card-focus {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 14px;
+  }
+  .phase-card-goal {
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .phase-card-1 .phase-card-goal { color: var(--red); }
+  .phase-card-2 .phase-card-goal { color: var(--amber); }
+  .phase-card-3 .phase-card-goal { color: var(--green); }
+
+  @media (max-width: 640px) {
+    .header { padding: 32px 20px 28px; }
+    .container { padding: 24px 16px 60px; }
+    .phase-overview { grid-template-columns: 1fr; }
+    .week-header { padding: 14px 16px; }
+    .week-body { padding: 0 16px 16px; }
+    .header-stats { gap: 10px; }
+    .action-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-eyebrow">Senior Coach Training Blueprint · Rapid Elo</div>
+  <h1 class="header-title">Beginner → <em>1200 Elo</em><br>in 90 Days</h1>
+  <p class="header-sub">A 12-week execution-ready sprint system. Every action links to a specific risk it eliminates. No passive learning — only measurable improvement.</p>
+  <div class="header-stats">
+    <div class="stat-pill"><div class="stat-dot"></div><strong>12 Weeks</strong> · 3–4 actions each</div>
+    <div class="stat-pill"><div class="stat-dot green"></div><strong>1–2 hrs/day</strong> rapid time controls</div>
+    <div class="stat-pill"><div class="stat-dot red"></div><strong>5 risks</strong> addressed every week</div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- CORE PRINCIPLES -->
+  <div style="margin: 40px 0 12px;">
+    <div style="font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.15em; color: var(--subtle); margin-bottom: 16px;">Core Coaching Principles</div>
+  </div>
+  <div class="principles">
+    <div class="principle-card">
+      <div class="principle-num">01</div>
+      <div class="principle-title">Tactics before everything</div>
+      <div class="principle-body">90% of games below 1200 are decided by one-move blunders. Pattern recognition eats opening theory for breakfast.</div>
+    </div>
+    <div class="principle-card">
+      <div class="principle-num">02</div>
+      <div class="principle-title">Analyse every loss</div>
+      <div class="principle-body">A loss un-analysed is a lesson wasted. Use engine analysis to find your moment of failure — not just the blunder.</div>
+    </div>
+    <div class="principle-card">
+      <div class="principle-num">03</div>
+      <div class="principle-title">Simple systems only</div>
+      <div class="principle-body">One opening per colour. You play the same plans again and again. Understanding > memorisation at this level.</div>
+    </div>
+    <div class="principle-card">
+      <div class="principle-num">04</div>
+      <div class="principle-title">Measure ruthlessly</div>
+      <div class="principle-body">Track puzzle accuracy weekly. If it's not going up, the method is wrong. Adjust immediately.</div>
+    </div>
+    <div class="principle-card">
+      <div class="principle-num">05</div>
+      <div class="principle-title">Tilt is an Elo leak</div>
+      <div class="principle-body">Walk away after 2 consecutive losses. Revenge games are -20 Elo average. Log tilt incidents and patterns.</div>
+    </div>
+  </div>
+
+  <!-- PHASE OVERVIEW -->
+  <div style="font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.15em; color: var(--subtle); margin-bottom: 16px;">Three-Phase Roadmap</div>
+  <div class="phase-overview">
+    <div class="phase-card phase-card-1">
+      <div class="phase-card-weeks">Phase 1 · Weeks 1–4</div>
+      <div class="phase-card-name">Stop the Bleeding</div>
+      <div class="phase-card-focus">Eliminate hanging pieces. Build the blunder-check habit. Install two simple openings. Establish daily structure.</div>
+      <div class="phase-card-goal">↑ Target: ≥75% puzzle accuracy</div>
+    </div>
+    <div class="phase-card phase-card-2">
+      <div class="phase-card-weeks">Phase 2 · Weeks 5–8</div>
+      <div class="phase-card-name">Build the Engine</div>
+      <div class="phase-card-focus">Deepen tactical patterns (forks, pins, skewers). Learn basic endgames. Start structured game analysis with feedback loops.</div>
+      <div class="phase-card-goal">↑ Target: ≥82% puzzle accuracy</div>
+    </div>
+    <div class="phase-card phase-card-3">
+      <div class="phase-card-weeks">Phase 3 · Weeks 9–12</div>
+      <div class="phase-card-name">Reach 1200</div>
+      <div class="phase-card-focus">Calculation drills, practical endgames, opening prep refinement, simulated tournament pressure. Peak rating push.</div>
+      <div class="phase-card-goal">↑ Target: 1200 Elo on rapid</div>
+    </div>
+  </div>
+
+  <!-- RISK LEGEND -->
+  <div style="font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.15em; color: var(--subtle); margin-bottom: 12px;">Risk Tags — every action targets one</div>
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background: var(--purple);"></div>Plateau</div>
+    <div class="legend-item"><div class="legend-dot" style="background: var(--amber);"></div>Discipline</div>
+    <div class="legend-item"><div class="legend-dot" style="background: var(--blue);"></div>Passive Learning</div>
+    <div class="legend-item"><div class="legend-dot" style="background: var(--red);"></div>Tilt</div>
+    <div class="legend-item"><div class="legend-dot" style="background: var(--teal);"></div>Skill Gap</div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!--  PHASE 1  -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="phase-header phase-1">
+    <div class="phase-badge">Phase 1</div>
+    <div class="phase-title">Stop the Bleeding</div>
+    <div class="phase-line"></div>
+    <div class="phase-meta">Weeks 1–4</div>
+  </div>
+
+  <!-- WEEK 1 -->
+  <div class="week-block open" id="w1">
+    <div class="week-header" onclick="toggle('w1')">
+      <div class="week-num">WK 01</div>
+      <div class="week-title">Foundation: Blunder Radar &amp; Daily Habit</div>
+      <div class="week-focus">Install the one-blunder-check habit before every move</div>
+      <div class="week-chevron">▶</div>
+    </div>
+    <div class="week-body">
+      <div class="action-grid">
+        <div class="action-card">
+          <div class="action-top">
+            <div class="action-icon">♟</div>
+            <div class="action-name">Blunder-check drill: Before every move, ask "Can my opponent take anything for free?"</div>
+            <div class="risk-tag risk-skill">Skill Gap</div>
+          </div>
+          <div class="action-rationale">Hanging pieces account for ~60% of all material loss below 1000. This single habit is worth 100+ rating points. Implement as a verbal checklist — say it out loud.</div>
+          <div class="action-output">📊 <span>Output:</span> Track % of games with zero hanging pieces. Target: 50% by end of week.</div>
+        </div>
+        <div class="action-card">
+          <div class="action-top">
+            <div class="action-icon">🔶</div>
+            <div class="action-name">Daily puzzles: 15 easy tactical puzzles (Chess.com/Lichess). Focus on piece safety only.</div>
+            <div class="risk-tag risk-passive">Passive Learning</div>
+          </div>
+          <div class="action-rationale">Pattern recognition is built through repetition. Easy puzzles at high volume build the pattern library faster than hard puzzles done rarely. Track accuracy — not just completion.</div>
+          <div class="action-output">📊 <span>Output:</span> Puzzle accuracy ≥65% by day 7. Log score daily in a tracker.</div>
+        </div>
+        <div class="action-card">
+          <div class="action-top">
+            <div class="action-icon">📅</div>
+            <div class="action-name">Set a fixed 60-min daily session slot. Write it in a calendar and protect it like a meeting.</div>
+            <div class="risk-tag risk-discipline">Discipline</div>
+          </div>
+          <div class="action-rationale">Consistency beats intensity at this stage. 60 minutes daily for 90 days is more valuable than 4-hour weekend binges. The habit itself is the first skill to build.</div>
+          <div class="action-output">📊 <span>Output:</span> 7-day streak completed. Zero missed days in Week 1.</div>
+        </div>
+        <div class="action-card">
+          <div class="action-top">
+            <div class="action-icon">♜</div>
+            <div class="action-name">Play 3 rapid games (10+0 or 10+5). After each, spend 5 mins identifying your #1 mistake.</div>
+            <div class="risk-tag risk-passive">Passive Learning</div>
+          </div>
+          <div class="action-rationale">Playing without reflection cements bad habits. The 5-minute post-game reflection loop converts losses into lessons immediately, before memory fades.</div>
+          <div class="action-output">📊 <span>Output:</span> 3 games completed. 3 "lesson notes" written. Baseline rating recorded.</div>
+        </div>
+      </div>
+      <div class="schedule-block">
+        <div class="schedule-title">Sample Daily Schedule (60–90 min)</div>
+        <div class="schedule-row"><span class="sched-time">0–20 min</span><span class="sched-task">Tactical puzzles (15 puzzles, easy difficulty)</span><span class="sched-mins">20 min</span></div>
+        <div class="schedule-row"><span class="sched-time">20–50 min</span><span class="sched-task">Play 1 rapid game with blunder-check habit active</span><span class="sched-mins">30 min</span></div>
+        <div class="schedule-row"><span class="sched-time">50–60 min</span><span class="sched-task">Post-game: find worst move, note it, move on</span><span class="sched-mins">10 min</span></div>
+        <div class="schedule-row"><span class="sched-time">Optional +30</span><span class="sched-task">Re-do 5 puzzles you got wrong</span><span class="sched-mins">15 min</span></div>
+      </div>
+      <div class="week-metrics">
+        <div class="metric-item"><div class="metric-label">Puzzles/day</div><div class="metric-val">15</div></div>
+        <div class="metric-item"><div class="metric-label">Games/week</div><div class="metric-val">3</div></div>
+        <div class="metric-item"><div class="metric-label">Target accuracy</div><div class="metric-val">65%</div></div>
+        <div class="metric-item"><div class="metric-label">Focus</div><div class="metric-val">Piece Safety</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WEEK 2 -->
+  <div class="week-block" id="w2">
+    <div class="week-header" onclick="toggle('w2')">
+      <div class="week-num">WK 02</div>
+      <div class="week-title">Opening Foundation: Two Systems, One Each Side</div>
+      <div class="week-focus">Install e4 (White) and Caro-Kann/e5 (Black). Principles only — no 15-move theory.</div>
+      <div class="week-chevron">▶</div>
+    </div>
+    <div class="week-body">
+      <div class="action-grid">
+        <div class="action-card">
+          <div class="action-top">
+            <div class="action-icon">📖</div>
+            <div class="action-name">Study the 3 opening principles (30 min video or article): centre control, piece development, king safety.</div>
+            <div class="risk-tag risk-skill">Skill Gap</div>
+          </div>
+          <div class="action-rationale">Below 1200, almost every opening problem is a violation of one of three principles. Understanding these makes your opening play self-correcting, even in unfamiliar positions.</div>
+          <div class="action-output">📊 <span>Output:</span> Can explain all 3 principles from memory. Apply in next 5 games — track principle violations.</div>
+        </div>
+        <div class="action-card">
+          <div class="action-top">
+            <div class="action-icon">♔</div>
+            <div class="action-name">Learn your White repertoire: 1.e4, castle kingside quickly, control the centre. Study via 15-min video.</div>
+            <div class="risk-tag risk-skill">Skill Gap</div>
+          </div>
+          <div class="action-rationale">Simplicity is the goal. A system you understand beats a complex theory you've memorised. After 1.e4, focus on: develop knights before bishops, castle by move 8, don't move the same piece twice.</div>
+          <div class="action-output">📊 <span>Output:</span> Castle by move 8 in ≥80% of White games this week.</div>
+        </div>
+        <div class="action-card">
+          <div class="action-top">
+            <div class="action-icon">♚</div>
+            <div class="action-name">Choose and study one Black defence vs 1.e4 — recommend e5 (Open Game) for counterplay, or Caro-Kann for solid play.</div>
+            <div class="risk-tag risk-skill">Skill Gap</div>
+          </div>
+          <div class="action-rationale">Pick one and stick to it for all 90 days. Familiarity with your own positions is worth more than theoretical breadth. The Caro-Kann leads to easier endgames; 1...e5 sharpens tactics faster.</div>
+          <div class="action-output">📊 <span>Output:</span> Decision made. Opening played in ≥5 Black games. Record how often you reach a comfortable middlegame.</div>
+        </div>
+        <div class="action-card">
+          <div class="action-top">
+            <div class="action-icon">⛔</div>
+            <div class="action-name">Tilt Protocol: After 2 consecutive losses, close the board for 30 minutes. Log the reason each time.</div>
+            <div class="risk-tag risk-tilt">Tilt</div>
+          </div>
+          <div class="action-rationale">Tilt is a silent Elo drain. The 2-loss rule is a hard stop that prevents emotional variance from compounding. Logging reasons turns tilt into data you can act on.</div>
+          <div class="action-output">📊 <span>Output:</span> Tilt log started. Track # of tilt breaks taken. Goal: implement the protocol 100% of the time it triggers.</div>
+        </div>
+      </div>
+      <div class="week-metrics">
+        <div class="metric-item"><div class="metric-label">Puzzles/day</div><div class="metric-val">20</div></div>
+        <div class="metric-item"><div class="metric-label">Games/week</div><div class="metric-val">5</div></div>
+        <div class="metric-item"><div class="metric-label">Target accuracy</div><div class="metric-val">68%</div></div>
+        <div class="metric-item"><div class="metric-label">Focus</div><div class="metric-val">Opening Principles</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WEEK 3 -->
+  <div class="week-block" id="w3">
+    <div class="week-header" onclick="toggle('w3')">
+      <div class="week-num">WK 03</div>
+      <div class="week-title">Tactical Patterns: Forks &amp; Simple Combinations</div>
+      <div class="week-focus">Learn to see knight forks, queen forks, and pawn forks before they happen.</div>
+      <div class="week-chevron">▶</div>
+    </div>
+    <div class="week-body">
+      <div class="action-grid">
+        <div class="action-card">
+          <div class="action-top">
+            <div class="action-icon">🔱</div>
+            <div class="action-name">Puzzle theme: Fork only (Lichess Puzzle Storm or thematic set). 20 fork puzzles per day, 3 days.</div>
+            <div class="risk-tag risk-passive">Passive Learning</div>
+          </div>
+          <div class="action-rationale">Thematic drilling burns patterns into fast-recognition memory. Forks are the most common tactical win below 1200. Seeing a fork opportunity takes &lt;1 second once the pattern is wired.</div>
+          <div class="action-output">📊 <span>Output:</span> Fork puzzle accuracy ≥75%. Can spot undefended fork squares without the clock.</div>
+        </div>
+        <div class="action-card">
+          <div class="action-top">
+            <div class="action-icon">🔍</div>
+            <div class="action-name">First structured game analysis: Run 3 of your games through engine. Find the "losing move" in each. Write one sentence about why.</div>
+            <div class="risk-tag risk-passive">Passive Learning</div>
+          </div>
+          <div class="action-rationale">The engine isn't for looking at all 30 moves — only for finding the moment the game turned. That single move, analysed deeply, teaches more than a complete game review.</div>
+          <div class="action-output">📊 <span>Output:</span> 3 losing moves identified and logged. Pattern: were they all hanging pieces, or calculation errors?</div>
+        </div>
+        <div class="action-card">
+          <div class="action-top">
+            <div class="action-icon">📈</div>
+            <div class="action-name">Weekly rating check: Record current Elo on your platform. Compare to Day 1 baseline. Note the delta.</div>
+            <div class="risk-tag risk-plateau">Plateau</div>
+          </div>
+          <div class="action-rationale">Early rating swings are noisy, but tracking keeps you honest. If rating is still below baseline after 3 weeks, the training method — not effort — needs to change.</div>
+          <div class="action-output">📊 <span>Output:</span> Rating chart started (spreadsheet or notebook). First 3 data points logged.</div>
+        </div>
+        <div class="action-card">
+          <div class="action-top">
+            <div class="action-icon">🎯</div>
+            <div class="action-name">Play 5 games with a specific intention: "I will not hang any piece in these 5 games." Track success rate.</div>
+            <div class="risk-tag risk-discipline">Discipline</div>
+          </div>
+          <div class="action-rationale">Intentional practice creates feedback loops. Playing with a specific goal — not just "trying to win" — forces the analytical mindset that will drive your rating up.</div>
+          <div class="action-output">📊 <span>Output:</span> Piece-hanging rate recorded for all 5 games. Target: ≤1 per game on average.</div>
+        </div>
+      </div>
+      <div class="week-metrics">
+        <div class="metric-item"><div class="metric-label">Puzzles/day</div><div class="metric-val">25</div></div>
+        <div class="metric-item"><div class="metric-label">Games/week</div><div class="metric-val">5</div></div>
+        <div class="metric-item"><div class="metric-label">Target accuracy</div><div class="metric-val">70%</div></div>
+        <div class="metric-item"><div class="metric-label">Focus</div><div class="metric-val">Fork Patterns</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WEEK 4 -->
+  <div class="week-block" id="w4">
+    <div class="week-header" onclick="toggle('w4')">
+      <div class="week-num">WK 04</div>
+      <div class="week-title">Phase 1 Review &amp; Consolidation Sprint</div>
+      <div class="week-focus">Reinforce blunder-check, lock in openings, measure vs. targets.</div>
+      <div class="week-chevron">▶</div>
+    </div>
+    <div class="week-body">
+      <div class="action-grid">
+        <div class="action-card">
+          <div class="action-top">
+            <div class="action-icon">📋</div>
+            <div class="action-name">Phase 1 Audit: Review all game notes and tilt logs. Identify your #1 recurring blunder pattern.</div>
+            <div class="risk-tag risk-plateau">Plateau</div>
+          </div>
+          <div class="action-rationale">One recurring pattern fixed = a reliable Elo bump. Generalist improvement is slow. Finding "I always blunder when attacked on the kingside" is a specific, solvable problem.</div>
+          <div class="action-output">📊 <span>Output:</span> #1 blunder pattern named. Custom puzzle set created around that specific pattern for next week.</div>
+        </div>
+        <div class="action-card">
+          <div class="action-top">
+            <div class="action-icon">♟</div>
+            <div class="action-name">Play 7 rated rapid games (your highest volume week yet). Apply all Phase 1 habits simultaneously.</div>
+            <div class="risk-tag risk-discipline">Discipline</div>
+          </div>
+          <div class="action-rationale">Consolidation requires pressure testing. Seven games in a week forces the habits (blunder check, tilt protocol, opening principles) to become automatic under real conditions.</div>
+          <div class="action-output">📊 <span>Output:</span> 7 games completed. Win rate vs. Phase 1 baseline computed. Target: positive trend.</div>
+        </div>
+        <div class="action-card">
+          <div class="action-top">
+            <div class="action-icon">🔁</div>
+            <div class="action-name">Puzzle catch-up: Redo all puzzles you got wrong in weeks 1–3. Take notes on why each failed.</div>
+            <div class="risk-tag risk-passive">Passive Learning</div>
+          </div>
+          <div class="action-rationale">Spaced repetition of failed puzzles is more efficient than doing new easy ones. Each retry has a specific lesson attached, converting passive drilling into active pattern correction.</div>
+          <div class="action-output">📊 <span>Output:</span> Retry accuracy ≥15% higher than original. Patterns still failing flagged for Phase 2 theme drilling.</div>
+        </div>
+        <div class="action-card">
+          <div class="action-top">
+            <div class="action-icon">🧘</div>
+            <div class="action-name">Rest day review: One full rest day this week with no games. Review your tilt log and mental performance.</div>
+            <div class="risk-tag risk-tilt">Tilt</div>
+          </div>
+          <div class="action-rationale">Deliberate rest prevents burnout and lets training consolidate. Chess improvement is also physiological — reviewing mental patterns (tilt, frustration) on rest days sharpens emotional control in games.</div>
+          <div class="action-output">📊 <span>Output:</span> Tilt log reviewed. 1 coping strategy identified and written down for future use.</div>
+        </div>
+      </div>
+      <div class="week-metrics">
+        <div class="metric-item"><div class="metric-label">Puzzles/day</div><div class="metric-val">20</div></div>
+        <div class="metric-item"><div class="metric-label">Games/week</div><div class="metric-val">7</div></div>
+        <div class="metric-item"><div class="metric-label">Target accuracy</div><div class="metric-val">75%</div></div>
+        <div class="metric-item"><div class="metric-label">Focus</div><div class="metric-val">Consolidation</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!--  PHASE 2  -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="phase-header phase-2">
+    <div class="phase-badge">Phase 2</div>
+    <div class="phase-title">Build the Engine</div>
+    <div class="phase-line"></div>
+    <div class="phase-meta">Weeks 5–8</div>
+  </div>
+
+  <!-- WEEK 5 -->
+  <div class="week-block" id="w5">
+    <div class="week-header" onclick="toggle('w5')">
+      <div class="week-num">WK 05</div>
+      <div class="week-title">Tactical Depth: Pins &amp; Skewers</div>
+      <div class="week-focus">Add two new pattern families. Increase puzzle difficulty to 800–1000 Elo range.</div>
+      <div class="week-chevron">▶</div>
+    </div>
+    <div class="week-body">
+      <div class="action-grid">
+        <div class="action-card">
+          <div class="action-top">
+            <div class="action-icon">📌</div>
+            <div class="action-name">Thematic drilling: 15 pin puzzles + 15 skewer puzzles on days 1–3. No mixed sets yet.</div>
+            <div class="risk-tag risk-passive">Passive Learning</div>
+          </div>
+          <div class="action-rationale">Pins and skewers are the next most common tactical motifs after hanging pieces and forks. Isolating them first before mixing builds cleaner, faster recognition than doing random tactical puzzles.</div>
+          <div class="action-output">📊 <span>Output:</span> Pin accuracy ≥78%. Skewer accuracy ≥75%. Written record of at least 2 patterns that surprised you.</div>
+        </div>
+        <div class="action-card">
+          <div class="action-top">
+            <div class="action-icon">🎲</div>
+            <div class="action-name">Mixed puzzle sessions: Days 4–7, do 25 random-theme puzzles. Track accuracy against themed drilling baseline.</div>
+            <div class="risk-tag risk-skill">Skill Gap</div>
+          </div>
+          <div class="action-rationale">The board doesn't announce tactics. Random drilling tests pattern transfer — the ability to spot a pin in a real game without a thematic hint. The gap between themed and random accuracy is your real skill gap.</div>
+          <div class="action-output">📊 <span>Output:</span> Random accuracy ≥70%. If &lt;10% gap vs themed, transfer is working. If &gt;20% gap, redo themed drilling next week.</div>
+        </div>
+        <div class="action-card">
+          <div class="action-top">
+            <div class="action-icon">🕐</div>
+            <div class="action-name">Time management drill: Play 5 games and track clock — never let your time fall below 20% unless opponent's is also low.</div>
+            <div class="risk-tag risk-skill">Skill Gap</div>
+          </div>
+          <div class="action-rationale">Time trouble causes blunders independently of tactical skill. Many players below 1200 lose on time or blunder in time pressure. Tracking clock usage forces disciplined pace.</div>
+          <div class="action-output">📊 <span>Output:</span> Average time remaining at game end logged for 5 games. Target: &gt;20% always.</div>
+        </div>
+        <div class="action-card">
+          <div class="action-top">
+            <div class="action-icon">📝</div>
+            <div class="action-name">Analyse 2 wins this week, not just losses. Find the move that gave you the advantage.</div>
+            <div class="risk-tag risk-passive">Passive Learning</div>
+          </div>
+          <div class="action-rationale">Analysing wins reinforces what works and builds strategic confidence. Most players only analyse losses, which creates a negative feedback bias and ignores positive pattern reinforcement.</div>
+          <div class="action-output">📊 <span>Output:</span> 2 winning moves identified. Can you recreate the thinking? Write it out in a sentence.</div>
+        </div>
+      </div>
+      <div class="week-metrics">
+        <div class="metric-item"><div class="metric-label">Puzzles/day</div><div class="metric-val">25–30</div></div>
+        <div class="metric-item"><div class="metric-label">Games/week</div><div class="metric-val">5–7</div></div>
+        <div class="metric-item"><div class="metric-label">Target accuracy</div><div class="metric-val">75–78%</div></div>
+        <div class="metric-item"><div class="metric-label">Focus</div><div class="metric-val">Pins · Skewers</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WEEK 6 -->
+  <div class="week-block" id="w6">
+    <div class="week-header" onclick="toggle('w6')">
+      <div class="week-num">WK 06</div>
+      <div class="week-title">Endgame Fundamentals: King &amp; Pawn Endings</div>
+      <div class="week-focus">K+P vs K, opposition, the square rule. 20% of games below 1200 are won or lost in K+P endings.</div>
+      <div class="week-chevron">▶</div>
+    </div>
+    <div class="week-body">
+      <div class="action-grid">
+        <div class="action-card">
+          <div class="action-top">
+            <div class="action-icon">👑</div>
+            <div class="action-name">Study the 3 essential K+P endings: opposition, the "square rule," and rook pawns. 20-min video + practice each day.</div>
+            <div class="risk-tag risk-skill">Skill Gap</div>
+          </div>
+          <div class="action-rationale">K+P endgames are completely solvable — they're 100% calculable. Knowing opposition and the rule of the square converts drawn endgames to wins and lost endgames to draws immediately.</div>
+          <div class="action-output">📊 <span>Output:</span> Can solve K+P vs K from any standard position correctly 9/10 times in Lichess endgame trainer.</div>
+        </div>
+        <div class="action-card">
+          <div class="action-top">
+            <div class="action-icon">🏁</div>
+            <div class="action-name">Endgame trainer sessions: 15 min/day on Lichess endgame trainer, K+P themes only.</div>
+            <div class="risk-tag risk-passive">Passive Learning</div>
+          </div>
+          <div class="action-rationale">Theory without practice doesn't stick. The Lichess endgame trainer provides immediate feedback and forces you to play out the technique, not just recognise it. This is active, not passive, learning.</div>
+          <div class="action-output">📊 <span>Output:</span> 7 sessions completed. Accuracy tracked and improving. At least one endgame win in a real game this week.</div>
+        </div>
+        <div class="action-card">
+          <div class="action-top">
+            <div class="action-icon">⬆️</div>
+            <div class="action-name">Increase puzzle difficulty: Move to 900–1100 Elo range. Expect accuracy to drop — that's correct.</div>
+            <div class="risk-tag risk-plateau">Plateau</div>
+          </div>
+          <div class="action-rationale">Staying in the comfort zone of easy puzzles will plateau your rating. Discomfort in puzzles directly translates to stronger positions and better calculation in games. A temporary accuracy dip is a growth signal.</div>
+          <div class="action-output">📊 <span>Output:</span> New accuracy floor logged at harder difficulty. Target: stabilise ≥68% within 2 weeks at this level.</div>
+        </div>
+        <div class="action-card">
+          <div class="action-top">
+            <div class="action-icon">🧱</div>
+            <div class="action-name">Identify your middlegame weakness: Do you lose material to tactics, or lose strategically by drifting? Engine analysis of 3 games.</div>
+            <div class="risk-tag risk-plateau">Plateau</div>
+          </div>
+          <div class="action-rationale">Below 1200, almost all defeats are tactical — but knowing if your problem is "I don't see tactics" vs "I drift into passive positions" tells you exactly where to direct training effort in Phase 3.</div>
+          <div class="action-output">📊 <span>Output:</span> Weakness category named: Tactical (blunders) or Positional (drift). Phase 3 adjusted accordingly.</div>
+        </div>
+      </div>
+      <div class="week-metrics">
+        <div class="metric-item"><div class="metric-label">Puzzles/day</div><div class="metric-val">25</div></div>
+        <div class="metric-item"><div class="metric-label">Games/week</div><div class="metric-val">5</div></div>
+        <div class="metric-item"><div class="metric-label">Target accuracy</div><div class="metric-val">78%</div></div>
+        <div class="metric-item"><div class="metric-label">Focus</div><div class="metric-val">K+P Endings</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WEEK 7 -->
+  <div class="week-block" id="w7">
+    <div class="week-header" onclick="toggle('w7')">
+      <div class="week-num">WK 07</div>
+      <div class="week-title">Calculation Training &amp; Candidate Moves</div>
+      <div class="week-focus">Learn to calculate 2–3 moves deep before every critical decision. Build the "candidate move" habit.</div>
+      <div class="week-chevron">▶</div>
+    </div>
+    <div class="week-body">
+      <div class="action-grid">
+        <div class="action-card">
+          <div class="action-top">
+            <div class="action-icon">🧠</div>
+            <div class="action-name">Candidate move protocol: Before any critical move, list 2–3 candidate moves out loud (or in your head). Pick the best. Track in games.</div>
+            <div class="risk-tag risk-skill">Skill Gap</div>
+          </div>
+          <div class="action-rationale">Most blunders happen when players commit to the first move they see. The candidate move habit inserts a mental pause that catches 70% of tactical blunders before they happen.</div>
+          <div class="action-output">📊 <span>Output:</span> Applied in ≥80% of decisive moments in 5 games. Blunder rate in those games vs. previous baseline.</div>
+        </div>
+        <div class="action-card">
+          <div class="action-top">
+            <div class="action-icon">🔭</div>
+            <div class="action-name">Calculation drill (no board): From a described position, calculate 3 moves ahead in your head. 10 positions, 3×/week.</div>
+            <div class="risk-tag risk-skill">Skill Gap</div>
+          </div>
+          <div class="action-rationale">Visualisation is the bottleneck for most club-level players. Board vision — the ability to see future positions without moving pieces — is trainable and is directly responsible for calculation accuracy in games.</div>
+          <div class="action-output">📊 <span>Output:</span> 3 sessions completed. Accuracy on 3-move calculations ≥60%. Improvement tracked week-over-week.</div>
+        </div>
+        <div class="action-card">
+          <div class="action-top">
+            <div class="action-icon">📊</div>
+            <div class="action-name">Mid-programme rating check: Record Elo. Are you on pace for 1200? If not, identify the single biggest bottleneck.</div>
+            <div class="risk-tag risk-plateau">Plateau</div>
+          </div>
+          <div class="action-rationale">Week 7 is the critical feedback point. If rating hasn't moved meaningfully, the programme needs adjustment — not just more effort. A specific, honest bottleneck diagnosis is worth more than motivation.</div>
+          <div class="action-output">📊 <span>Output:</span> Rating delta from baseline noted. If &lt;50 points improvement, specific intervention plan written for Weeks 8–12.</div>
+        </div>
+        <div class="action-card">
+          <div class="action-top">
+            <div class="action-icon">🔄</div>
+            <div class="action-name">Opening repertoire review: Replay 5 opening sequences you've actually played. Fix any moves that went wrong.</div>
+            <div class="risk-tag risk-discipline">Discipline</div>
+          </div>
+          <div class="action-rationale">After 6 weeks of games, your opening repertoire has real data. Reviewing where you deviated from your plan and what the engine recommends converts your actual game database into personalised opening prep.</div>
+          <div class="action-output">📊 <span>Output:</span> 1–2 specific opening improvements noted. Repertoire updated. Comfortable in your system for ≥80% of games.</div>
+        </div>
+      </div>
+      <div class="week-metrics">
+        <div class="metric-item"><div class="metric-label">Puzzles/day</div><div class="metric-val">25</div></div>
+        <div class="metric-item"><div class="metric-label">Games/week</div><div class="metric-val">7</div></div>
+        <div class="metric-item"><div class="metric-label">Target accuracy</div><div class="metric-val">80%</div></div>
+        <div class="metric-item"><div class="metric-label">Focus</div><div class="metric-val">Calculation</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WEEK 8 -->
+  <div class="week-block" id="w8">
+    <div class="week-header" onclick="toggle('w8')">
+      <div class="week-num">WK 08</div>
+      <div class="week-title">Phase 2 Review &amp; Pressure Test</div>
+      <div class="week-focus">Full synthesis week. Play 10 games. Measure every metric. Recalibrate Phase 3.</div>
+      <div class="week-chevron">▶</div>
+    </div>
+    <div class="week-body">
+      <div class="action-grid">
+        <div class="action-card">
+          <div class="action-top">
+            <div class="action-icon">🏆</div>
+            <div class="action-name">Play 10 rated rapid games in 7 days. Use full habit stack: blunder-check, candidate moves, tilt protocol, opening system.</div>
+            <div class="risk-tag risk-discipline">Discipline</div>
+          </div>
+          <div class="action-rationale">The highest-volume game week so far stress-tests whether habits are automatic or still deliberate. Real improvement shows up in high-volume, high-stakes conditions — not just when you're fresh.</div>
+          <div class="action-output">📊 <span>Output:</span> 10 games played. Win rate logged. Accuracy vs. Days 1–7 compared. Phase 3 pacing adjusted.</div>
+        </div>
+        <div class="action-card">
+          <div class="action-top">
+            <div class="action-icon">🎯</div>
+            <div class="action-name">Deep-analyse your 3 most instructive losses this week using engine. Write 3-bullet summary for each.</div>
+            <div class="risk-tag risk-passive">Passive Learning</div>
+          </div>
+          <div class="action-rationale">Three carefully analysed games beats 30 games played and forgotten. The 3-bullet format forces compression: what went wrong, what the correct plan was, how to avoid it next time.</div>
+          <div class="action-output">📊 <span>Output:</span> 9 concrete improvement bullets written. At least 2 that target a new insight, not a repeat of previous weeks.</div>
+        </div>
+        <div class="action-card">
+          <div class="action-top">
+            <div class="action-icon">🧩</div>
+            <div class="action-name">Rook endgame introduction: Learn Lucena and Philidor positions. 15 min study + practice in endgame trainer.</div>
+            <div class="risk-tag risk-skill">Skill Gap</div>
+          </div>
+          <div class="action-rationale">Rook endings are the most common endgame type. Lucena (winning with rook) and Philidor (drawing with rook) are the two positions that unlock the entire category. A 30-min investment pays dividends for years.</div>
+          <div class="action-output">📊 <span>Output:</span> Can execute Philidor defence from memory. Lucena method understood (not yet mastered). Both applied correctly in practice games.</div>
+        </div>
+        <div class="action-card">
+          <div class="action-top">
+            <div class="action-icon">📉</div>
+            <div class="action-name">Tilt audit: Review the full 8-week tilt log. Identify your top 2 tilt triggers and design a specific countermeasure for each.</div>
+            <div class="risk-tag risk-tilt">Tilt</div>
+          </div>
+          <div class="action-rationale">Eight weeks of data is statistically meaningful. Tilt triggers are personal (bad bishops, time pressure, unexpected sidelines) and require custom responses. Generic advice ("just stay calm") doesn't work — personalised protocols do.</div>
+          <div class="action-output">📊 <span>Output:</span> 2 tilt triggers named. 2 countermeasures written and committed to for Phase 3.</div>
+        </div>
+      </div>
+      <div class="week-metrics">
+        <div class="metric-item"><div class="metric-label">Puzzles/day</div><div class="metric-val">20</div></div>
+        <div class="metric-item"><div class="metric-label">Games/week</div><div class="metric-val">10</div></div>
+        <div class="metric-item"><div class="metric-label">Target accuracy</div><div class="metric-val">82%</div></div>
+        <div class="metric-item"><div class="metric-label">Focus</div><div class="metric-val">Full Synthesis</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!--  PHASE 3  -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="phase-header phase-3">
+    <div class="phase-badge">Phase 3</div>
+    <div class="phase-title">Reach 1200</div>
+    <div class="phase-line"></div>
+    <div class="phase-meta">Weeks 9–12</div>
+  </div>
+
+  <!-- WEEK 9 -->
+  <div class="week-block" id="w9">
+    <div class="week-header" onclick="toggle('w9')">
+      <div class="week-num">WK 09</div>
+      <div class="week-title">Advanced Tactics: Double Attacks &amp; Discovered Checks</div>
+      <div class="week-focus">These two motifs separate 1000 players from 1200 players. Master them here.</div>
+      <div class="week-chevron">▶</div>
+    </div>
+    <div class="week-body">
+      <div class="action-grid">
+        <div class="action-card">
+          <div class="action-top">
+            <div class="action-icon">⚡</div>
+            <div class="action-name">Puzzle theme sprint: 20 discovered attack puzzles + 20 double attack puzzles. 3 days of themed drilling.</div>
+            <div class="risk-tag risk-passive">Passive Learning</div>
+          </div>
+          <div class="action-rationale">Discovered attacks and double attacks are the "combination starters" that lead to forced wins in the 900–1200 range. They almost always involve a surprise — only pattern recognition makes them reliably visible before it's too late.</div>
+          <div class="action-output">📊 <span>Output:</span> Discovered attack accuracy ≥78%. Double attack accuracy ≥80%. Can explain the mechanism of each without a board.</div>
+        </div>
+        <div class="action-card">
+          <div class="action-top">
+            <div class="action-icon">🔢</div>
+            <div class="action-name">3-move combination drill: 10 positions daily where the solution is exactly 3 moves. No hints. Time yourself: max 3 min per position.</div>
+            <div class="risk-tag risk-skill">Skill Gap</div>
+          </div>
+          <div class="action-rationale">Three-move combinations are the ceiling for most below-1200 games. At 1200, you need to be able to execute them under time pressure reliably. Timed drilling simulates game conditions far better than untimed puzzles.</div>
+          <div class="action-output">📊 <span>Output:</span> Average solve time &lt;2 min per 3-mover. Accuracy ≥65%. Progress tracked over 4 weeks.</div>
+        </div>
+        <div class="action-card">
+          <div class="action-top">
+            <div class="action-icon">📈</div>
+            <div class="action-name">Rating push week: Play 8 rated games with specific intent to execute tactics you've drilled. No passive games.</div>
+            <div class="risk-tag risk-plateau">Plateau</div>
+          </div>
+          <div class="action-rationale">Weeks 9–12 are the conversion phase — converting training into rating. Active games (where you consciously look for drilled patterns) accelerate transfer from training to competition performance.</div>
+          <div class="action-output">📊 <span>Output:</span> Rating delta this week logged. At least 1 win attributed directly to a drilled tactic (note it).</div>
+        </div>
+        <div class="action-card">
+          <div class="action-top">
+            <div class="action-icon">🛡️</div>
+            <div class="action-name">Pre-game mental routine: Write a 3-step pre-game checklist (e.g. "breathe, blunder-check, candidate moves"). Use it before every game.</div>
+            <div class="risk-tag risk-tilt">Tilt</div>
+          </div>
+          <div class="action-rationale">A consistent pre-game ritual reduces anxiety and activates the analytical mindset. This is standard sports psychology — a written, repeated routine signals to your brain that it's time to calculate, not react emotionally.</div>
+          <div class="action-output">📊 <span>Output:</span> Routine written and printed/saved. Applied before every game in weeks 9–12. Track if tilt rate decreases.</div>
+        </div>
+      </div>
+      <div class="week-metrics">
+        <div class="metric-item"><div class="metric-label">Puzzles/day</div><div class="metric-val">30</div></div>
+        <div class="metric-item"><div class="metric-label">Games/week</div><div class="metric-val">8</div></div>
+        <div class="metric-item"><div class="metric-label">Target accuracy</div><div class="metric-val">82%</div></div>
+        <div class="metric-item"><div class="metric-label">Focus</div><div class="metric-val">Double Attacks</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WEEK 10 -->
+  <div class="week-block" id="w10">
+    <div class="week-header" onclick="toggle('w10')">
+      <div class="week-num">WK 10</div>
+      <div class="week-title">Practical Endgames &amp; Strategic Vision</div>
+      <div class="week-focus">Rook + pawn endgames. Basic strategic concepts (open files, weak squares, pawn structure).</div>
+      <div class="week-chevron">▶</div>
+    </div>
+    <div class="week-body">
+      <div class="action-grid">
+        <div class="action-card">
+          <div class="action-top">
+            <div class="action-icon">♜</div>
+            <div class="action-name">Master the Philidor position in rook endings. Practice from both sides in Lichess trainer until 90% success rate.</div>
+            <div class="risk-tag risk-skill">Skill Gap</div>
+          </div>
+          <div class="action-rationale">The Philidor position alone saves a full point out of every 10 drawn rook endgames. At 1200-level, drawn rook endgames come up every session. This is pure Elo waiting to be claimed.</div>
+          <div class="action-output">📊 <span>Output:</span> Philidor from both sides: 9/10 correct. At least 1 draw saved using Philidor in a real game.</div>
+        </div>
+        <div class="action-card">
+          <div class="action-top">
+            <div class="action-icon">📋</div>
+            <div class="action-name">Strategic basics: Watch/read one guide on open files, the 7th rank, and weak pawns. Apply consciously in 5 games.</div>
+            <div class="risk-tag risk-skill">Skill Gap</div>
+          </div>
+          <div class="action-rationale">Strategy becomes important around 1000–1100 Elo when tactical blunders decrease. Three strategic concepts — open files, 7th rank domination, weak pawn targets — cover 80% of strategic decisions at 1200.</div>
+          <div class="action-output">📊 <span>Output:</span> Applied at least one strategic concept correctly in 3 of 5 games. Note it post-game.</div>
+        </div>
+        <div class="action-card">
+          <div class="action-top">
+            <div class="action-icon">🏅</div>
+            <div class="action-name">Play a simulated "tournament week": 3 games/day for 3 days (not scattered). Compete as if it matters.</div>
+            <div class="risk-tag risk-discipline">Discipline</div>
+          </div>
+          <div class="action-rationale">Simulating tournament conditions — focused sessions, high-stakes mindset, no casual games — prepares you for the rating push in weeks 11–12. Concentration under pressure is a trainable skill.</div>
+          <div class="action-output">📊 <span>Output:</span> 9 games in 3 days. Win rate vs. scattered games. Mental fatigue patterns noted.</div>
+        </div>
+        <div class="action-card">
+          <div class="action-top">
+            <div class="action-icon">🔄</div>
+            <div class="action-name">Study 2 master games in your opening system. Find the moves that won material or a strategic advantage.</div>
+            <div class="risk-tag risk-passive">Passive Learning</div>
+          </div>
+          <div class="action-rationale">Studying master games in your own opening system is much more efficient than general game study. Every plan and idea is directly applicable. Two well-chosen games can install 3–5 reusable middlegame ideas.</div>
+          <div class="action-output">📊 <span>Output:</span> 3–5 specific plans or ideas noted from the master games. At least 1 applied in a real game this week.</div>
+        </div>
+      </div>
+      <div class="week-metrics">
+        <div class="metric-item"><div class="metric-label">Puzzles/day</div><div class="metric-val">25</div></div>
+        <div class="metric-item"><div class="metric-label">Games/week</div><div class="metric-val">9</div></div>
+        <div class="metric-item"><div class="metric-label">Target accuracy</div><div class="metric-val">82–85%</div></div>
+        <div class="metric-item"><div class="metric-label">Focus</div><div class="metric-val">Rook Endings</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WEEK 11 -->
+  <div class="week-block" id="w11">
+    <div class="week-header" onclick="toggle('w11')">
+      <div class="week-num">WK 11</div>
+      <div class="week-title">Peak Rating Push — Maximum Game Volume</div>
+      <div class="week-focus">This is the highest-intensity week. Training is secondary. Games and analysis are primary.</div>
+      <div class="week-chevron">▶</div>
+    </div>
+    <div class="week-body">
+      <div class="action-grid">
+        <div class="action-card">
+          <div class="action-top">
+            <div class="action-icon">🔥</div>
+            <div class="action-name">Play 12–14 rated rapid games this week. Full habit stack active. No skipping analysis after losses.</div>
+            <div class="risk-tag risk-discipline">Discipline</div>
+          </div>
+          <div class="action-rationale">Week 11 is the volume peak. After 10 weeks of skill-building, you need sufficient game data for the rating system to reflect your true strength. More games = more accurate rating. Do not hold back.</div>
+          <div class="action-output">📊 <span>Output:</span> 12+ games completed. Rating at highest point yet. If under 1100, identify the last remaining bottleneck immediately.</div>
+        </div>
+        <div class="action-card">
+          <div class="action-top">
+            <div class="action-icon">🎯</div>
+            <div class="action-name">Tactics maintenance: 20 puzzles/day (mixed). Do not drop below 80% accuracy. If you do, return to pure thematic drilling.</div>
+            <div class="risk-tag risk-plateau">Plateau</div>
+          </div>
+          <div class="action-rationale">Tactical sharpness must be maintained under high game volume. Twenty mixed puzzles daily takes &lt;25 minutes and ensures pattern recognition stays active even when game analysis dominates the session.</div>
+          <div class="action-output">📊 <span>Output:</span> 7 consecutive days at ≥80% accuracy. No thematic regression required (if regression occurs, pause games and re-drill for 2 days).</div>
+        </div>
+        <div class="action-card">
+          <div class="action-top">
+            <div class="action-icon">🧩</div>
+            <div class="action-name">Post-game protocol enforced for every game: 5 mins, identify the losing move, record. Do not skip even one.</div>
+            <div class="risk-tag risk-passive">Passive Learning</div>
+          </div>
+          <div class="action-rationale">At 12–14 games per week, skipping analysis becomes tempting. Enforcing the 5-minute post-game protocol, even if brief, keeps the feedback loop intact during the highest-volume week.</div>
+          <div class="action-output">📊 <span>Output:</span> 100% post-game protocol completion rate. Losing move log has 12+ entries. Patterns becoming more specific.</div>
+        </div>
+        <div class="action-card">
+          <div class="action-top">
+            <div class="action-icon">🧘</div>
+            <div class="action-name">Tilt protocol: Mandatory 1-hour break after any 3-game losing streak. No exceptions. Log every application.</div>
+            <div class="risk-tag risk-tilt">Tilt</div>
+          </div>
+          <div class="action-rationale">High-volume weeks are peak tilt risk. Extending the standard 2-loss rule to a 3-loss rule with a longer 1-hour break acknowledges that fatigue compounds emotional decision-making in extended sessions.</div>
+          <div class="action-output">📊 <span>Output:</span> Tilt rule applied 100% of the time. Log compliance rate. Games played after enforced break — did it help?</div>
+        </div>
+      </div>
+      <div class="week-metrics">
+        <div class="metric-item"><div class="metric-label">Puzzles/day</div><div class="metric-val">20 (maintain)</div></div>
+        <div class="metric-item"><div class="metric-label">Games/week</div><div class="metric-val">12–14</div></div>
+        <div class="metric-item"><div class="metric-label">Target accuracy</div><div class="metric-val">≥80%</div></div>
+        <div class="metric-item"><div class="metric-label">Focus</div><div class="metric-val">Rating Push</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WEEK 12 -->
+  <div class="week-block" id="w12">
+    <div class="week-header" onclick="toggle('w12')">
+      <div class="week-num">WK 12</div>
+      <div class="week-title">Final Sprint &amp; Rating Readiness Gate</div>
+      <div class="week-focus">Consolidation and peak performance. Enter the Rating Readiness Gate on Day 90.</div>
+      <div class="week-chevron">▶</div>
+    </div>
+    <div class="week-body">
+      <div class="action-grid">
+        <div class="action-card">
+          <div class="action-top">
+            <div class="action-icon">🏁</div>
+            <div class="action-name">Final game week: 8–10 games. Execute your full system with maximum confidence. Track each win and loss cause.</div>
+            <div class="risk-tag risk-discipline">Discipline</div>
+          </div>
+          <div class="action-rationale">Week 12 is not a time for new learning — it's a time for execution. All 12 weeks of training should be deployed, confidently, in these final games. Trust the system.</div>
+          <div class="action-output">📊 <span>Output:</span> 8–10 games. Final Elo recorded on Day 90. Win/loss cause analysis for every game.</div>
+        </div>
+        <div class="action-card">
+          <div class="action-top">
+            <div class="action-icon">📊</div>
+            <div class="action-name">90-Day Retrospective: Complete programme audit. What improved most? What still needs work? What's the plan for Month 4?</div>
+            <div class="risk-tag risk-plateau">Plateau</div>
+          </div>
+          <div class="action-rationale">The audit is not just reflective — it prevents post-programme regression. Players who don't have a post-90-day plan often lose 50–100 rating points within a month. Define the next phase before Day 90.</div>
+          <div class="action-output">📊 <span>Output:</span> Written retrospective completed. Month 4 training plan outlined. Top 3 ongoing weaknesses identified.</div>
+        </div>
+        <div class="action-card">
+          <div class="action-top">
+            <div class="action-icon">🎓</div>
+            <div class="action-name">Puzzle mastery check: Complete 30 mixed puzzles — all 5 tactical families (forks, pins, skewers, discoveries, double attacks). Target ≥85%.</div>
+            <div class="risk-tag risk-skill">Skill Gap</div>
+          </div>
+          <div class="action-rationale">The 85% accuracy threshold across all five tactical families is a reliable predictor of 1200+ gameplay. This final benchmark confirms whether tactical training has reached the required level for consistent 1200-class play.</div>
+          <div class="action-output">📊 <span>Output:</span> 85%+ across all tactical families = ready for 1200. &lt;80% in any category = that's your next training target.</div>
+        </div>
+        <div class="action-card">
+          <div class="action-top">
+            <div class="action-icon">⭐</div>
+            <div class="action-name">Calculate your "true strength estimate": If Elo is still &lt;1200, note the standard deviation and project forward. Don't panic.</div>
+            <div class="risk-tag risk-tilt">Tilt</div>
+          </div>
+          <div class="action-rationale">Elo has high variance, especially at low sample sizes. True strength and displayed rating can differ by 100+ points over 90 days. Anxiety about the number itself is a form of tilt. Trust the process metrics.</div>
+          <div class="action-output">📊 <span>Output:</span> True strength estimated from recent game performance (not just rating). Confidence calibrated correctly. Tilt-free mindset entering Day 90.</div>
+        </div>
+      </div>
+      <div class="schedule-block">
+        <div class="schedule-title">Day 90 Final Session Template</div>
+        <div class="schedule-row"><span class="sched-time">0–10 min</span><span class="sched-task">Pre-game ritual. Review your principles card. Centre yourself.</span><span class="sched-mins">10 min</span></div>
+        <div class="schedule-row"><span class="sched-time">10–30 min</span><span class="sched-task">20 mixed tactical puzzles. Confirm you're above 80% accuracy today.</span><span class="sched-mins">20 min</span></div>
+        <div class="schedule-row"><span class="sched-time">30–90 min</span><span class="sched-task">Play 2 rated rapid games. Full habit stack. Blunder-check every move.</span><span class="sched-mins">60 min</span></div>
+        <div class="schedule-row"><span class="sched-time">90–105 min</span><span class="sched-task">Analyse both games. Record final Elo. Write the 90-day retrospective.</span><span class="sched-mins">15 min</span></div>
+      </div>
+      <div class="week-metrics">
+        <div class="metric-item"><div class="metric-label">Puzzles/day</div><div class="metric-val">20–30</div></div>
+        <div class="metric-item"><div class="metric-label">Games/week</div><div class="metric-val">8–10</div></div>
+        <div class="metric-item"><div class="metric-label">Target accuracy</div><div class="metric-val">≥85%</div></div>
+        <div class="metric-item"><div class="metric-label">Focus</div><div class="metric-val">Peak Execution</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!--  READINESS GATE  -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="gate">
+    <div class="gate-eyebrow">Day 90 · Final Checkpoint</div>
+    <div class="gate-title">Rating Readiness Gate</div>
+    <div class="gate-sub">Pass all 6 checks before declaring 1200-ready. Partial passes tell you exactly where to focus next.</div>
+    <div class="gate-checks">
+      <div class="gate-check">
+        <div class="gate-check-icon">♟</div>
+        <div>
+          <div class="gate-check-name">Blunder Elimination</div>
+          <div class="gate-check-sub">Hanging-piece blunders in &lt;10% of games over the last 3 weeks. Blunder-check habit is automatic, not deliberate.</div>
+        </div>
+      </div>
+      <div class="gate-check">
+        <div class="gate-check-icon">🔶</div>
+        <div>
+          <div class="gate-check-name">Tactical Accuracy ≥ 85%</div>
+          <div class="gate-check-sub">Across all 5 tactical families on mixed puzzles at 1000+ difficulty. No single category below 78%.</div>
+        </div>
+      </div>
+      <div class="gate-check">
+        <div class="gate-check-icon">📖</div>
+        <div>
+          <div class="gate-check-name">Opening System Mastery</div>
+          <div class="gate-check-sub">Comfortable, principled play for 12+ moves in your chosen system as both colours. Castle by move 8 in ≥85% of games.</div>
+        </div>
+      </div>
+      <div class="gate-check">
+        <div class="gate-check-icon">👑</div>
+        <div>
+          <div class="gate-check-name">K+P and Rook Endings</div>
+          <div class="gate-check-sub">K+P vs K solved 9/10. Philidor position held 8/10. At least 2 endgame wins converted from drawn positions in real games.</div>
+        </div>
+      </div>
+      <div class="gate-check">
+        <div class="gate-check-icon">😤</div>
+        <div>
+          <div class="gate-check-name">Tilt Control</div>
+          <div class="gate-check-sub">Tilt protocol applied 100% of the time in last 4 weeks. Zero "revenge game" spirals of 4+ losses in a row.</div>
+        </div>
+      </div>
+      <div class="gate-check">
+        <div class="gate-check-icon">📊</div>
+        <div>
+          <div class="gate-check-name">Rating ≥ 1100 (or Rising)</div>
+          <div class="gate-check-sub">Either at 1200 already, or at 1100+ with a positive trajectory over the last 2 weeks. Elo is a lagging indicator — trust the process metrics.</div>
+        </div>
+      </div>
+    </div>
+    <div class="gate-verdict">
+      <strong>If you pass all 6:</strong> You are playing 1200-strength chess. The rating will follow within 2–4 weeks of continued play. Celebrate the process, not just the number.<br><br>
+      <strong>If you pass 4–5:</strong> You are very close. Note which gate failed and build a 2-week intensive sprint targeting only that area. Rating is within reach.<br><br>
+      <strong>If you pass &lt;4:</strong> Do not be discouraged. Review the audit. The 90-day plan has built real skill — your improvement is real, even if the number hasn't caught up. Pick the 2 biggest gaps and run a second 30-day cycle.
+    </div>
+  </div>
+
+</div>
+
+<script>
+function toggle(id) {
+  const block = document.getElementById(id);
+  block.classList.toggle('open');
+}
+</script>
+</body>
+</html>
