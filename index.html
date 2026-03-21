@@ -146,13 +146,17 @@ function draw(dist){
  let size=8+Math.sin(Date.now()/100);
  ctx.fillStyle="#3b82f6";
  ctx.fillRect(player.x*TILE-camX-size/2,player.y*TILE-camY-size/2,size,size);
+ // player name
+ ctx.fillStyle="white";
+ ctx.fillText("Abderrahmane",player.x*TILE-camX-25,player.y*TILE-camY-10);
 
  // friend with name
  if(!found){
   ctx.fillStyle="#22c55e";
   ctx.fillRect(friend.x*TILE-camX-4,friend.y*TILE-camY-4,8,8);
   ctx.fillStyle="white";
-  ctx.fillText("Abderrahmane",friend.x*TILE-camX-20,friend.y*TILE-camY-10);
+  ctx.fillText("Sofiane",friend.x*TILE-camX-15,friend.y*TILE-camY-10);
+ }
  }
 
  // particles (confetti)
