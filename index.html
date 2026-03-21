@@ -3,40 +3,74 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pixel Friendship Quest v6</title>
+<title>Pixel Friendship Quest v7</title>
 <style>
 body{margin:0;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;background:#020617;color:white;font-family:monospace}
 canvas{border:3px solid #fff;image-rendering:pixelated;box-shadow:0 0 20px #fff}
 #ui{text-align:center;margin-top:10px}
-#message{opacity:0;transition:.5s;margin-top:8px}
+#dialogueBox{
+ position:absolute;bottom:20px;width:420px;
+ background:rgba(0,0,0,0.85);
+ border:2px solid #fff;padding:10px;
+ display:none
+}
+#speaker{font-weight:bold;margin-bottom:5px}
 button{margin-top:6px;padding:6px 12px;background:#2563eb;color:#fff;border:none;cursor:pointer}
 </style>
 </head>
 <body>
 <canvas id="game" width="480" height="360"></canvas>
+<div id="dialogueBox">
+<div id="speaker"></div>
+<div id="dialogueText"></div>
+<div style="font-size:12px;opacity:.7">(click to continue)</div>
+</div>
 <div id="ui">
 <div id="status"></div>
-<div id="message"></div>
 <button onclick="restartGame()">Restart</button>
 </div>
 <script>
 const canvas=document.getElementById('game');
 const ctx=canvas.getContext('2d');
 const statusEl=document.getElementById('status');
-const messageEl=document.getElementById('message');
+const dialogueBox=document.getElementById('dialogueBox');
+const dialogueTextEl=document.getElementById('dialogueText');
+const speakerEl=document.getElementById('speaker');
 
 const TILE=16,W=32,H=24;
-let map,player,friend,found,startTime,particles=[],trail=[];
+let map,player,friend,found,particles=[],trail=[];
 
-const messages=[
-"💙 Abderrahmane! I missed you so much, my drifting legend!",
-"🏎️ You found me! Let’s go drift through life together, Abderrahmane!",
-"🎉 Happy early birthday Abderrahmane! I’ve been waiting for you!",
-"✨ Abderrahmane, you make every adventure feel like a perfect drift!",
-"🔥 Just like your drifting, you always find the perfect path to me!"
+const dialogueLines=[
+ {speaker:"Sofiane",text:"💙 Abderrahmane... you found me."},
+ {speaker:"Abderrahmane",text:"Of course I did. I’d drift across any maze for you."},
+ {speaker:"Sofiane",text:"🏎️ Haha... that’s why you’re the best."},
+ {speaker:"Sofiane",text:"🎂 Happy early birthday, legend."}
 ];
 
-function beep(){const a=new (window.AudioContext||window.webkitAudioContext)();const o=a.createOscillator();o.connect(a.destination);o.start();o.stop(a.currentTime+0.1)}
+let currentLine=0, charIndex=0, typing=true;
+
+function beep(){const a=new (window.AudioContext||window.webkitAudioContext)();const o=a.createOscillator();o.connect(a.destination);o.start();o.stop(a.currentTime+0.05)}
+
+function startDialogue(){
+ dialogueBox.style.display='block';
+ currentLine=0;charIndex=0;typing=true;
+}
+
+canvas.addEventListener('click',()=>{
+ if(!found) return;
+ if(typing){
+   // skip typing
+   dialogueTextEl.innerHTML=dialogueLines[currentLine].text;
+   typing=false;
+ } else {
+   currentLine++;
+   if(currentLine>=dialogueLines.length){
+     dialogueBox.style.display='none';
+   } else {
+     charIndex=0;typing=true;
+   }
+ }
+});
 
 function generate(){
  map=Array.from({length:H},()=>Array(W).fill(1));
@@ -59,17 +93,12 @@ function generate(){
   if(d>10)far.push({x,y});
  }
  friend=far[Math.random()*far.length|0];
- found=false;startTime=Date.now();particles=[];trail=[];
+ found=false;particles=[];trail=[];
 }
 
 let keys={};
 document.onkeydown=e=>keys[e.key]=true;
 document.onkeyup=e=>keys[e.key]=false;
-
-canvas.addEventListener("touchmove",e=>{
- let t=e.touches[0];
- move((t.clientX-canvas.width/2)/100,(t.clientY-canvas.height/2)/100);
-});
 
 function move(dx,dy){
  let nx=player.x+dx,ny=player.y+dy;
@@ -91,14 +120,21 @@ function update(){
 
  if(!found && dist<0.5){
   found=true;
-  messageEl.innerHTML=messages[Math.random()*messages.length|0]+"<br>🎂 Happy Birthday Abderrahmane!";
-  messageEl.style.opacity=1;
-  beep();
-  for(let i=0;i<80;i++)particles.push({x:player.x,y:player.y,vx:(Math.random()-0.5)*1,vy:(Math.random()-0.5)*1,life:1});
+  startDialogue();
  }
 
- particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.life-=0.02});
- particles=particles.filter(p=>p.life>0);
+ // typing effect
+ if(found && typing){
+   let line=dialogueLines[currentLine];
+   speakerEl.textContent=line.speaker;
+   if(charIndex < line.text.length){
+     dialogueTextEl.innerHTML=line.text.slice(0,charIndex);
+     charIndex++;
+     beep();
+   } else {
+     typing=false;
+   }
+ }
 
  trail.forEach(t=>t.life-=0.03);
  trail=trail.filter(t=>t.life>0);
@@ -106,11 +142,11 @@ function update(){
  camX+=((player.x*TILE-canvas.width/2)-camX)*0.1;
  camY+=((player.y*TILE-canvas.height/2)-camY)*0.1;
 
- draw(dist);
+ draw();
  requestAnimationFrame(update);
 }
 
-function draw(dist){
+function draw(){
  ctx.fillRect(0,0,canvas.width,canvas.height);
 
  for(let y=0;y<H;y++){
@@ -121,7 +157,7 @@ function draw(dist){
   }
  }
 
- // drift trail
+ // trail
  ctx.fillStyle="#38bdf8";
  trail.forEach(t=>{ctx.globalAlpha=t.life;ctx.fillRect(t.x*TILE-camX,t.y*TILE-camY,4,4);ctx.globalAlpha=1});
 
@@ -131,45 +167,24 @@ function draw(dist){
  ctx.arc(player.x*TILE-camX,player.y*TILE-camY,80,0,Math.PI*2,true);
  ctx.fill();
 
- // compass
- ctx.fillStyle="white";
- let a=Math.atan2(friend.y-player.y,friend.x-player.x);
- ctx.fillText("→",20+Math.cos(a)*10,20+Math.sin(a)*10);
-
- // minimap
- ctx.fillStyle="#000";
- ctx.fillRect(canvas.width-110,10,100,80);
- for(let y=0;y<H;y++)for(let x=0;x<W;x++)if(map[y][x]===0)ctx.fillRect(canvas.width-110+x*3,10+y*3,2,2);
- ctx.fillStyle="#3b82f6";ctx.fillRect(canvas.width-110+player.x*3,10+player.y*3,3,3);
-
  // player
- let size=8+Math.sin(Date.now()/100);
  ctx.fillStyle="#3b82f6";
- ctx.fillRect(player.x*TILE-camX-size/2,player.y*TILE-camY-size/2,size,size);
- // player name
+ ctx.fillRect(player.x*TILE-camX-4,player.y*TILE-camY-4,8,8);
  ctx.fillStyle="white";
  ctx.fillText("Abderrahmane",player.x*TILE-camX-25,player.y*TILE-camY-10);
 
- // friend with name
+ // friend
  if(!found){
   ctx.fillStyle="#22c55e";
   ctx.fillRect(friend.x*TILE-camX-4,friend.y*TILE-camY-4,8,8);
   ctx.fillStyle="white";
   ctx.fillText("Sofiane",friend.x*TILE-camX-15,friend.y*TILE-camY-10);
  }
- }
 
- // particles (confetti)
- ctx.fillStyle="#facc15";
- particles.forEach(p=>ctx.fillRect(p.x*TILE-camX,p.y*TILE-camY,3,3));
+ statusEl.textContent=found?"Talking...":"Explore carefully...";
+}
 
- statusEl.textContent=found?"🎉 You found Abderrahmane!":"Explore carefully...";
-
-function restartGame(){messageEl.style.opacity=0;generate()}
-
-messageEl.innerHTML="Press any key to start";
-messageEl.style.opacity=1;
-document.addEventListener("keydown",()=>messageEl.style.opacity=0);
+function restartGame(){dialogueBox.style.display='none';generate()}
 
 generate();update();
 </script>
