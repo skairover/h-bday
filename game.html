@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pixel Friendship Quest v5</title>
+<title>Pixel Friendship Quest v6</title>
 <style>
 body{margin:0;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;background:#020617;color:white;font-family:monospace}
 canvas{border:3px solid #fff;image-rendering:pixelated;box-shadow:0 0 20px #fff}
@@ -26,7 +26,7 @@ const statusEl=document.getElementById('status');
 const messageEl=document.getElementById('message');
 
 const TILE=16,W=32,H=24;
-let map,player,friend,found,startTime,particles=[],visited=[];
+let map,player,friend,found,startTime,particles=[],trail=[];
 
 const messages=[
 "💙 Abderrahmane! I missed you so much, my drifting legend!",
@@ -38,36 +38,28 @@ const messages=[
 
 function beep(){const a=new (window.AudioContext||window.webkitAudioContext)();const o=a.createOscillator();o.connect(a.destination);o.start();o.stop(a.currentTime+0.1)}
 
-// HARDER dungeon (maze-like)
 function generate(){
  map=Array.from({length:H},()=>Array(W).fill(1));
- visited=Array.from({length:H},()=>Array(W).fill(false));
-
+ let visited=Array.from({length:H},()=>Array(W).fill(false));
  function carve(x,y){
   let dirs=[[1,0],[-1,0],[0,1],[0,-1]].sort(()=>Math.random()-0.5);
-  visited[y][x]=true;
-  map[y][x]=0;
+  visited[y][x]=true;map[y][x]=0;
   for(let[dX,dY] of dirs){
     let nx=x+dX*2, ny=y+dY*2;
     if(ny>0&&ny<H-1&&nx>0&&nx<W-1&&!visited[ny][nx]){
-      map[y+dY][x+dX]=0;
-      carve(nx,ny);
+      map[y+dY][x+dX]=0;carve(nx,ny);
     }
   }
  }
  carve(2,2);
-
  player={x:2,y:2};
-
- // place friend far away
  let far=[];
  for(let y=0;y<H;y++)for(let x=0;x<W;x++)if(map[y][x]===0){
-   let d=Math.hypot(x-player.x,y-player.y);
-   if(d>10)far.push({x,y});
+  let d=Math.hypot(x-player.x,y-player.y);
+  if(d>10)far.push({x,y});
  }
  friend=far[Math.random()*far.length|0];
-
- found=false;startTime=Date.now();particles=[];
+ found=false;startTime=Date.now();particles=[];trail=[];
 }
 
 let keys={};
@@ -81,7 +73,10 @@ canvas.addEventListener("touchmove",e=>{
 
 function move(dx,dy){
  let nx=player.x+dx,ny=player.y+dy;
- if(map[Math.floor(ny)]?.[Math.floor(nx)]===0){player.x=nx;player.y=ny}
+ if(map[Math.floor(ny)]?.[Math.floor(nx)]===0){
+  trail.push({x:player.x,y:player.y,life:1});
+  player.x=nx;player.y=ny;
+ }
 }
 
 let camX=0,camY=0;
@@ -96,16 +91,18 @@ function update(){
 
  if(!found && dist<0.5){
   found=true;
-  messageEl.innerHTML=messages[Math.random()*messages.length|0];
+  messageEl.innerHTML=messages[Math.random()*messages.length|0]+"<br>🎂 Happy Birthday Abderrahmane!";
   messageEl.style.opacity=1;
   beep();
-  for(let i=0;i<50;i++)particles.push({x:player.x,y:player.y,vx:(Math.random()-0.5)*0.7,vy:(Math.random()-0.5)*0.7,life:1});
+  for(let i=0;i<80;i++)particles.push({x:player.x,y:player.y,vx:(Math.random()-0.5)*1,vy:(Math.random()-0.5)*1,life:1});
  }
 
  particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.life-=0.02});
  particles=particles.filter(p=>p.life>0);
 
- // smooth camera
+ trail.forEach(t=>t.life-=0.03);
+ trail=trail.filter(t=>t.life>0);
+
  camX+=((player.x*TILE-canvas.width/2)-camX)*0.1;
  camY+=((player.y*TILE-canvas.height/2)-camY)*0.1;
 
@@ -119,15 +116,18 @@ function draw(dist){
  for(let y=0;y<H;y++){
   for(let x=0;x<W;x++){
     let sx=x*TILE-camX,sy=y*TILE-camY;
-    if(map[y][x]===1){ctx.fillStyle="#312e81";ctx.fillRect(sx,sy,TILE,TILE);} 
-    else{ctx.fillStyle="#0f172a";ctx.fillRect(sx,sy,TILE,TILE);} 
+    ctx.fillStyle=map[y][x]===1?"#312e81":"#0f172a";
+    ctx.fillRect(sx,sy,TILE,TILE);
   }
  }
 
- // fog of war
+ // drift trail
+ ctx.fillStyle="#38bdf8";
+ trail.forEach(t=>{ctx.globalAlpha=t.life;ctx.fillRect(t.x*TILE-camX,t.y*TILE-camY,4,4);ctx.globalAlpha=1});
+
+ // fog
  ctx.fillStyle="rgba(0,0,0,0.85)";
- ctx.beginPath();
- ctx.rect(0,0,canvas.width,canvas.height);
+ ctx.beginPath();ctx.rect(0,0,canvas.width,canvas.height);
  ctx.arc(player.x*TILE-camX,player.y*TILE-camY,80,0,Math.PI*2,true);
  ctx.fill();
 
@@ -142,19 +142,24 @@ function draw(dist){
  for(let y=0;y<H;y++)for(let x=0;x<W;x++)if(map[y][x]===0)ctx.fillRect(canvas.width-110+x*3,10+y*3,2,2);
  ctx.fillStyle="#3b82f6";ctx.fillRect(canvas.width-110+player.x*3,10+player.y*3,3,3);
 
- // animated player (simple pulse)
- let size=8+Math.sin(Date.now()/100)*1;
+ // player
+ let size=8+Math.sin(Date.now()/100);
  ctx.fillStyle="#3b82f6";
  ctx.fillRect(player.x*TILE-camX-size/2,player.y*TILE-camY-size/2,size,size);
 
- // friend
- if(!found){ctx.fillStyle="#22c55e";ctx.fillRect(friend.x*TILE-camX-4,friend.y*TILE-camY-4,8,8)}
+ // friend with name
+ if(!found){
+  ctx.fillStyle="#22c55e";
+  ctx.fillRect(friend.x*TILE-camX-4,friend.y*TILE-camY-4,8,8);
+  ctx.fillStyle="white";
+  ctx.fillText("Abderrahmane",friend.x*TILE-camX-20,friend.y*TILE-camY-10);
+ }
 
- // particles
+ // particles (confetti)
  ctx.fillStyle="#facc15";
- particles.forEach(p=>ctx.fillRect(p.x*TILE-camX,p.y*TILE-camY,2,2));
+ particles.forEach(p=>ctx.fillRect(p.x*TILE-camX,p.y*TILE-camY,3,3));
 
- statusEl.textContent=found?"🎉 Found your friend!":"Explore carefully...";
+ statusEl.textContent=found?"🎉 You found Abderrahmane!":"Explore carefully...";
 }
 
 function restartGame(){messageEl.style.opacity=0;generate()}
