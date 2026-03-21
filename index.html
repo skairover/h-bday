@@ -164,7 +164,6 @@ function draw(dist){
  particles.forEach(p=>ctx.fillRect(p.x*TILE-camX,p.y*TILE-camY,3,3));
 
  statusEl.textContent=found?"🎉 You found Abderrahmane!":"Explore carefully...";
-}
 
 function restartGame(){messageEl.style.opacity=0;generate()}
 
