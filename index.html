@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pixel Friendship Quest v9</title>
+<title>Pixel Friendship Quest v8</title>
 <style>
 body{margin:0;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;background:#020617;color:white;font-family:monospace}
 canvas{border:3px solid #fff;image-rendering:pixelated;box-shadow:0 0 20px #fff}
@@ -15,7 +15,6 @@ canvas{border:3px solid #fff;image-rendering:pixelated;box-shadow:0 0 20px #fff}
 }
 #speaker{font-weight:bold;margin-bottom:5px}
 #portrait{width:40px;height:40px;display:inline-block;margin-right:8px}
-button{margin-top:6px;padding:6px 12px;background:#2563eb;color:#fff;border:none;cursor:pointer}
 </style>
 </head>
 <body>
@@ -28,7 +27,6 @@ button{margin-top:6px;padding:6px 12px;background:#2563eb;color:#fff;border:none
 <div id="dialogueText"></div>
 <div style="font-size:12px;opacity:.7">(click to continue)</div>
 </div>
-<button onclick="restartGame()">Restart</button>
 <script>
 const canvas=document.getElementById('game');
 const ctx=canvas.getContext('2d');
@@ -40,29 +38,30 @@ const portraitEl=document.getElementById('portrait');
 const TILE=16,W=32,H=24;
 let map,player,friend,found,trail=[];
 
+// multiple dialogue variations (more playful)
 const dialogues=[
 [
- {speaker:"Sofiane",text:"There you are, took you long enough 😄",color:"#22c55e"},
- {speaker:"Abderrahmane",text:"Had to take the scenic route... drifting style.",color:"#3b82f6"},
- {speaker:"Sofiane",text:"😂 Of course you did.",color:"#22c55e"},
- {speaker:"Sofiane",text:"By the way... happy early birthday 🎉",color:"#22c55e"}
+ {speaker:"Sofiane",text:"There you are, took you long enough 😄"},
+ {speaker:"Abderrahmane",text:"Had to take the scenic route... drifting style."},
+ {speaker:"Sofiane",text:"😂 Of course you did."},
+ {speaker:"Sofiane",text:"By the way... happy early birthday 🎉"}
 ],
 [
- {speaker:"Sofiane",text:"I knew you'd find me eventually.",color:"#22c55e"},
- {speaker:"Abderrahmane",text:"Maze had no chance.",color:"#3b82f6"},
- {speaker:"Sofiane",text:"Confidence level: 100%",color:"#22c55e"},
- {speaker:"Sofiane",text:"Birthday coming up... ready? 😎",color:"#22c55e"}
+ {speaker:"Sofiane",text:"I knew you'd find me eventually."},
+ {speaker:"Abderrahmane",text:"Maze had no chance."},
+ {speaker:"Sofiane",text:"Confidence level: 100%"},
+ {speaker:"Sofiane",text:"Birthday coming up... ready? 😎"}
 ],
 [
- {speaker:"Sofiane",text:"Bro you actually made it.",color:"#22c55e"},
- {speaker:"Abderrahmane",text:"Was there ever any doubt?",color:"#3b82f6"},
- {speaker:"Sofiane",text:"A little bit 😂",color:"#22c55e"},
- {speaker:"Sofiane",text:"Anyway, early happy birthday 🏎️",color:"#22c55e"}
+ {speaker:"Sofiane",text:"Bro you actually made it."},
+ {speaker:"Abderrahmane",text:"Was there ever any doubt?"},
+ {speaker:"Sofiane",text:"A little bit 😂"},
+ {speaker:"Sofiane",text:"Anyway, early happy birthday 🏎️"}
 ]
 ];
 
 let currentDialogue=[], currentLine=0, charIndex=0, typing=true;
-let zooming=false;
+let typingSpeed=2;
 
 function startDialogue(){
  currentDialogue = dialogues[Math.random()*dialogues.length|0];
@@ -75,7 +74,6 @@ canvas.addEventListener('click',()=>{
  if(!found) return;
  if(typing){
    dialogueTextEl.innerHTML=currentDialogue[currentLine].text;
-   dialogueTextEl.style.color=currentDialogue[currentLine].color;
    typing=false;
  } else {
    currentLine++;
@@ -110,15 +108,6 @@ function generate(){
  }
  friend=far[Math.random()*far.length|0];
  found=false;trail=[];
- showMission();
-}
-
-function showMission(){
- dialogueBox.style.display='block';
- speakerEl.textContent='Mission';
- speakerEl.style.color='#facc15';
- dialogueTextEl.innerHTML='Sofiane has been lost in the dungeons! Your mission: find him and rescue him!';
- dialogueTextEl.style.color='#ffffff';
 }
 
 let keys={};
@@ -133,7 +122,7 @@ function move(dx,dy){
  }
 }
 
-let camX=0,camY=0,zoom=1;
+let camX=0,camY=0,zoom=1,zooming=false;
 
 function update(){
  if(!found){
@@ -144,26 +133,29 @@ function update(){
  }
 
  let dist=Math.hypot(player.x-friend.x,player.y-friend.y);
+
  if(!found && dist<0.5){
   found=true;
   startDialogue();
  }
 
+ // typing effect with variable speed
  if(found && typing){
    let line=currentDialogue[currentLine];
    speakerEl.textContent=line.speaker;
-   speakerEl.style.color=line.color;
    portraitEl.style.background = line.speaker==="Abderrahmane"?"#3b82f6":"#22c55e";
    if(charIndex < line.text.length){
-     dialogueTextEl.innerHTML=line.text.slice(0,charIndex);
-     dialogueTextEl.style.color=line.color;
-     charIndex++;
+     if(Math.random()<0.7){
+       dialogueTextEl.innerHTML=line.text.slice(0,charIndex);
+       charIndex++;
+     }
    } else typing=false;
  }
 
  trail.forEach(t=>t.life-=0.03);
  trail=trail.filter(t=>t.life>0);
 
+ // camera + zoom
  camX+=((player.x*TILE-canvas.width/2)-camX)*0.1;
  camY+=((player.y*TILE-canvas.height/2)-camY)*0.1;
  if(zooming) zoom+= (1.2-zoom)*0.05; else zoom+= (1-zoom)*0.05;
@@ -175,6 +167,7 @@ function update(){
 function draw(){
  ctx.setTransform(zoom,0,0,zoom,0,0);
  ctx.fillRect(0,0,canvas.width,canvas.height);
+
  for(let y=0;y<H;y++){
   for(let x=0;x<W;x++){
     let sx=x*TILE-camX,sy=y*TILE-camY;
@@ -182,16 +175,20 @@ function draw(){
     ctx.fillRect(sx,sy,TILE,TILE);
   }
  }
+
  ctx.fillStyle="#38bdf8";
  trail.forEach(t=>{ctx.globalAlpha=t.life;ctx.fillRect(t.x*TILE-camX,t.y*TILE-camY,4,4);ctx.globalAlpha=1});
+
  ctx.fillStyle="rgba(0,0,0,0.85)";
  ctx.beginPath();ctx.rect(0,0,canvas.width,canvas.height);
  ctx.arc(player.x*TILE-camX,player.y*TILE-camY,80,0,Math.PI*2,true);
  ctx.fill();
+
  ctx.fillStyle="#3b82f6";
  ctx.fillRect(player.x*TILE-camX-4,player.y*TILE-camY-4,8,8);
  ctx.fillStyle="white";
  ctx.fillText("Abderrahmane",player.x*TILE-camX-25,player.y*TILE-camY-10);
+
  if(!found){
   ctx.fillStyle="#22c55e";
   ctx.fillRect(friend.x*TILE-camX-4,friend.y*TILE-camY-4,8,8);
