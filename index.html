@@ -3,30 +3,124 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pixel Friendship Quest v8</title>
+<title>Pixel Friendship Quest v9</title>
 <style>
 body{margin:0;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;background:#020617;color:white;font-family:monospace}
 canvas{border:3px solid #fff;image-rendering:pixelated;box-shadow:0 0 20px #fff}
-#dialogueBox{
- position:absolute;bottom:20px;width:420px;
- background:rgba(0,0,0,0.9);
- border:2px solid #fff;padding:10px;
- display:none
+
+/* Mission screen */
+#missionScreen{
+  position:absolute;
+  width:420px;
+  background:rgba(2,6,23,0.97);
+  border:2px solid #fff;
+  padding:24px 20px;
+  text-align:center;
+  box-shadow:0 0 30px rgba(255,255,255,0.15);
 }
-#speaker{font-weight:bold;margin-bottom:5px}
-#portrait{width:40px;height:40px;display:inline-block;margin-right:8px}
+#missionScreen h2{
+  margin:0 0 12px;
+  font-size:20px;
+  letter-spacing:2px;
+  color:#facc15;
+  text-shadow:0 0 8px #facc15;
+}
+#missionScreen .mission-body{
+  font-size:13px;
+  line-height:1.8;
+  color:#cbd5e1;
+  margin-bottom:20px;
+}
+#missionScreen .mission-body span.name-s{ color:#22c55e; font-weight:bold; }
+#missionScreen .mission-body span.name-a{ color:#3b82f6; font-weight:bold; }
+#startBtn{
+  background:#facc15;
+  color:#020617;
+  border:none;
+  font-family:monospace;
+  font-size:14px;
+  font-weight:bold;
+  padding:10px 28px;
+  cursor:pointer;
+  letter-spacing:1px;
+  transition:background 0.2s;
+}
+#startBtn:hover{ background:#fde047; }
+
+/* Dialogue box */
+#dialogueBox{
+  position:absolute;
+  bottom:20px;
+  width:420px;
+  background:rgba(0,0,0,0.92);
+  border:2px solid #fff;
+  padding:12px 14px;
+  display:none;
+}
+#speaker{
+  font-weight:bold;
+  margin-bottom:5px;
+  font-size:14px;
+  letter-spacing:1px;
+}
+#portrait{
+  width:40px;height:40px;
+  display:inline-block;
+  margin-right:10px;
+  border:2px solid rgba(255,255,255,0.3);
+  flex-shrink:0;
+}
+#dialogueText{
+  font-size:13px;
+  line-height:1.6;
+  color:#e2e8f0;
+  margin-top:6px;
+}
+#dialogueHint{font-size:11px;opacity:.5;margin-top:8px;}
+
+/* Restart button */
+#restartBtn{
+  margin-top:10px;
+  background:transparent;
+  color:#94a3b8;
+  border:1px solid #334155;
+  font-family:monospace;
+  font-size:12px;
+  padding:6px 18px;
+  cursor:pointer;
+  letter-spacing:1px;
+  transition:all 0.2s;
+}
+#restartBtn:hover{ color:#fff; border-color:#fff; }
 </style>
 </head>
 <body>
 <canvas id="game" width="480" height="360"></canvas>
+
+<!-- Mission Screen -->
+<div id="missionScreen">
+  <h2>📋 MISSION BRIEFING</h2>
+  <div class="mission-body">
+    <span class="name-s">Sofiane</span> has gone missing somewhere deep in the maze.<br><br>
+    As <span class="name-a">Abderrahmane</span>, it's up to you to navigate through the winding corridors and find him before it's too late.<br><br>
+    Your vision is limited — only what's nearby is revealed. Trust your instincts.<br><br>
+    🕹️ Use <b>WASD</b> or <b>Arrow Keys</b> to move.
+  </div>
+  <button id="startBtn">▶ START MISSION</button>
+</div>
+
+<!-- Dialogue Box -->
 <div id="dialogueBox">
-<div style="display:flex;align-items:center">
-<div id="portrait"></div>
-<div id="speaker"></div>
+  <div style="display:flex;align-items:center">
+    <div id="portrait"></div>
+    <div id="speaker"></div>
+  </div>
+  <div id="dialogueText"></div>
+  <div id="dialogueHint">(click to continue)</div>
 </div>
-<div id="dialogueText"></div>
-<div style="font-size:12px;opacity:.7">(click to continue)</div>
-</div>
+
+<button id="restartBtn">↺ RESTART</button>
+
 <script>
 const canvas=document.getElementById('game');
 const ctx=canvas.getContext('2d');
@@ -34,80 +128,102 @@ const dialogueBox=document.getElementById('dialogueBox');
 const dialogueTextEl=document.getElementById('dialogueText');
 const speakerEl=document.getElementById('speaker');
 const portraitEl=document.getElementById('portrait');
+const missionScreen=document.getElementById('missionScreen');
+const startBtn=document.getElementById('startBtn');
+const restartBtn=document.getElementById('restartBtn');
 
 const TILE=16,W=32,H=24;
 let map,player,friend,found,trail=[];
+let gameStarted=false;
 
-// multiple dialogue variations (more playful)
+// Speaker name colors
+const speakerColors={
+  "Abderrahmane": "#3b82f6",
+  "Sofiane": "#22c55e"
+};
+
 const dialogues=[
 [
- {speaker:"Sofiane",text:"There you are, took you long enough 😄"},
- {speaker:"Abderrahmane",text:"Had to take the scenic route... drifting style."},
- {speaker:"Sofiane",text:"😂 Of course you did."},
- {speaker:"Sofiane",text:"By the way... happy early birthday 🎉"}
+  {speaker:"Sofiane",text:"There you are, took you long enough 😄"},
+  {speaker:"Abderrahmane",text:"Had to take the scenic route... drifting style."},
+  {speaker:"Sofiane",text:"😂 Of course you did."},
+  {speaker:"Sofiane",text:"By the way... happy early birthday 🎉"}
 ],
 [
- {speaker:"Sofiane",text:"I knew you'd find me eventually."},
- {speaker:"Abderrahmane",text:"Maze had no chance."},
- {speaker:"Sofiane",text:"Confidence level: 100%"},
- {speaker:"Sofiane",text:"Birthday coming up... ready? 😎"}
+  {speaker:"Sofiane",text:"I knew you'd find me eventually."},
+  {speaker:"Abderrahmane",text:"Maze had no chance."},
+  {speaker:"Sofiane",text:"Confidence level: 100%"},
+  {speaker:"Sofiane",text:"Birthday coming up... ready? 😎"}
 ],
 [
- {speaker:"Sofiane",text:"Bro you actually made it."},
- {speaker:"Abderrahmane",text:"Was there ever any doubt?"},
- {speaker:"Sofiane",text:"A little bit 😂"},
- {speaker:"Sofiane",text:"Anyway, early happy birthday 🏎️"}
+  {speaker:"Sofiane",text:"Bro you actually made it."},
+  {speaker:"Abderrahmane",text:"Was there ever any doubt?"},
+  {speaker:"Sofiane",text:"A little bit 😂"},
+  {speaker:"Sofiane",text:"Anyway, early happy birthday 🏎️"}
 ]
 ];
 
-let currentDialogue=[], currentLine=0, charIndex=0, typing=true;
-let typingSpeed=2;
+let currentDialogue=[],currentLine=0,charIndex=0,typing=true;
+let zooming=false;
 
 function startDialogue(){
- currentDialogue = dialogues[Math.random()*dialogues.length|0];
- dialogueBox.style.display='block';
- currentLine=0;charIndex=0;typing=true;
- zooming=true;
+  currentDialogue=dialogues[Math.random()*dialogues.length|0];
+  dialogueBox.style.display='block';
+  currentLine=0;charIndex=0;typing=true;
+  zooming=true;
 }
 
 canvas.addEventListener('click',()=>{
- if(!found) return;
- if(typing){
-   dialogueTextEl.innerHTML=currentDialogue[currentLine].text;
-   typing=false;
- } else {
-   currentLine++;
-   if(currentLine>=currentDialogue.length){
-     dialogueBox.style.display='none';
-     zooming=false;
-   } else {
-     charIndex=0;typing=true;
-   }
- }
+  if(!found) return;
+  if(typing){
+    dialogueTextEl.innerHTML=currentDialogue[currentLine].text;
+    typing=false;
+  } else {
+    currentLine++;
+    if(currentLine>=currentDialogue.length){
+      dialogueBox.style.display='none';
+      zooming=false;
+    } else {
+      charIndex=0;typing=true;
+    }
+  }
+});
+
+startBtn.addEventListener('click',()=>{
+  missionScreen.style.display='none';
+  gameStarted=true;
+});
+
+restartBtn.addEventListener('click',()=>{
+  dialogueBox.style.display='none';
+  zooming=false;
+  generate();
+  missionScreen.style.display='block';
+  gameStarted=false;
 });
 
 function generate(){
- map=Array.from({length:H},()=>Array(W).fill(1));
- let visited=Array.from({length:H},()=>Array(W).fill(false));
- function carve(x,y){
-  let dirs=[[1,0],[-1,0],[0,1],[0,-1]].sort(()=>Math.random()-0.5);
-  visited[y][x]=true;map[y][x]=0;
-  for(let[dX,dY] of dirs){
-    let nx=x+dX*2, ny=y+dY*2;
-    if(ny>0&&ny<H-1&&nx>0&&nx<W-1&&!visited[ny][nx]){
-      map[y+dY][x+dX]=0;carve(nx,ny);
+  map=Array.from({length:H},()=>Array(W).fill(1));
+  let visited=Array.from({length:H},()=>Array(W).fill(false));
+  function carve(x,y){
+    let dirs=[[1,0],[-1,0],[0,1],[0,-1]].sort(()=>Math.random()-0.5);
+    visited[y][x]=true;map[y][x]=0;
+    for(let[dX,dY] of dirs){
+      let nx=x+dX*2,ny=y+dY*2;
+      if(ny>0&&ny<H-1&&nx>0&&nx<W-1&&!visited[ny][nx]){
+        map[y+dY][x+dX]=0;carve(nx,ny);
+      }
     }
   }
- }
- carve(2,2);
- player={x:2,y:2};
- let far=[];
- for(let y=0;y<H;y++)for(let x=0;x<W;x++)if(map[y][x]===0){
-  let d=Math.hypot(x-player.x,y-player.y);
-  if(d>10)far.push({x,y});
- }
- friend=far[Math.random()*far.length|0];
- found=false;trail=[];
+  carve(2,2);
+  player={x:2,y:2};
+  let far=[];
+  for(let y=0;y<H;y++)for(let x=0;x<W;x++)if(map[y][x]===0){
+    let d=Math.hypot(x-player.x,y-player.y);
+    if(d>10)far.push({x,y});
+  }
+  friend=far[Math.random()*far.length|0];
+  found=false;trail=[];
 }
 
 let keys={};
@@ -115,91 +231,102 @@ document.onkeydown=e=>keys[e.key]=true;
 document.onkeyup=e=>keys[e.key]=false;
 
 function move(dx,dy){
- let nx=player.x+dx,ny=player.y+dy;
- if(map[Math.floor(ny)]?.[Math.floor(nx)]===0){
-  trail.push({x:player.x,y:player.y,life:1});
-  player.x=nx;player.y=ny;
- }
+  let nx=player.x+dx,ny=player.y+dy;
+  if(map[Math.floor(ny)]?.[Math.floor(nx)]===0){
+    trail.push({x:player.x,y:player.y,life:1});
+    player.x=nx;player.y=ny;
+  }
 }
 
-let camX=0,camY=0,zoom=1,zooming=false;
+let camX=0,camY=0,zoom=1;
 
 function update(){
- if(!found){
-  if(keys['w']||keys['ArrowUp'])move(0,-0.15);
-  if(keys['s']||keys['ArrowDown'])move(0,0.15);
-  if(keys['a']||keys['ArrowLeft'])move(-0.15,0);
-  if(keys['d']||keys['ArrowRight'])move(0.15,0);
- }
+  if(gameStarted && !found){
+    if(keys['w']||keys['ArrowUp'])move(0,-0.15);
+    if(keys['s']||keys['ArrowDown'])move(0,0.15);
+    if(keys['a']||keys['ArrowLeft'])move(-0.15,0);
+    if(keys['d']||keys['ArrowRight'])move(0.15,0);
+  }
 
- let dist=Math.hypot(player.x-friend.x,player.y-friend.y);
+  if(!found){
+    let dist=Math.hypot(player.x-friend.x,player.y-friend.y);
+    if(gameStarted && dist<0.5){
+      found=true;
+      startDialogue();
+    }
+  }
 
- if(!found && dist<0.5){
-  found=true;
-  startDialogue();
- }
+  // Typing effect
+  if(found && typing){
+    let line=currentDialogue[currentLine];
+    // Colored speaker name
+    const col=speakerColors[line.speaker]||"#fff";
+    speakerEl.innerHTML=`<span style="color:${col}">${line.speaker}</span>`;
+    portraitEl.style.background=col;
+    if(charIndex<line.text.length){
+      if(Math.random()<0.7){
+        dialogueTextEl.innerHTML=line.text.slice(0,charIndex);
+        charIndex++;
+      }
+    } else typing=false;
+  }
 
- // typing effect with variable speed
- if(found && typing){
-   let line=currentDialogue[currentLine];
-   speakerEl.textContent=line.speaker;
-   portraitEl.style.background = line.speaker==="Abderrahmane"?"#3b82f6":"#22c55e";
-   if(charIndex < line.text.length){
-     if(Math.random()<0.7){
-       dialogueTextEl.innerHTML=line.text.slice(0,charIndex);
-       charIndex++;
-     }
-   } else typing=false;
- }
+  trail.forEach(t=>t.life-=0.03);
+  trail=trail.filter(t=>t.life>0);
 
- trail.forEach(t=>t.life-=0.03);
- trail=trail.filter(t=>t.life>0);
+  camX+=((player.x*TILE-canvas.width/2)-camX)*0.1;
+  camY+=((player.y*TILE-canvas.height/2)-camY)*0.1;
+  if(zooming) zoom+=(1.2-zoom)*0.05; else zoom+=(1-zoom)*0.05;
 
- // camera + zoom
- camX+=((player.x*TILE-canvas.width/2)-camX)*0.1;
- camY+=((player.y*TILE-canvas.height/2)-camY)*0.1;
- if(zooming) zoom+= (1.2-zoom)*0.05; else zoom+= (1-zoom)*0.05;
-
- draw();
- requestAnimationFrame(update);
+  draw();
+  requestAnimationFrame(update);
 }
 
 function draw(){
- ctx.setTransform(zoom,0,0,zoom,0,0);
- ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.setTransform(zoom,0,0,zoom,0,0);
+  ctx.fillStyle="#020617";
+  ctx.fillRect(0,0,canvas.width,canvas.height);
 
- for(let y=0;y<H;y++){
-  for(let x=0;x<W;x++){
-    let sx=x*TILE-camX,sy=y*TILE-camY;
-    ctx.fillStyle=map[y][x]===1?"#312e81":"#0f172a";
-    ctx.fillRect(sx,sy,TILE,TILE);
+  for(let y=0;y<H;y++){
+    for(let x=0;x<W;x++){
+      let sx=x*TILE-camX,sy=y*TILE-camY;
+      ctx.fillStyle=map[y][x]===1?"#312e81":"#0f172a";
+      ctx.fillRect(sx,sy,TILE,TILE);
+    }
   }
- }
 
- ctx.fillStyle="#38bdf8";
- trail.forEach(t=>{ctx.globalAlpha=t.life;ctx.fillRect(t.x*TILE-camX,t.y*TILE-camY,4,4);ctx.globalAlpha=1});
+  ctx.fillStyle="#38bdf8";
+  trail.forEach(t=>{
+    ctx.globalAlpha=t.life;
+    ctx.fillRect(t.x*TILE-camX,t.y*TILE-camY,4,4);
+    ctx.globalAlpha=1;
+  });
 
- ctx.fillStyle="rgba(0,0,0,0.85)";
- ctx.beginPath();ctx.rect(0,0,canvas.width,canvas.height);
- ctx.arc(player.x*TILE-camX,player.y*TILE-camY,80,0,Math.PI*2,true);
- ctx.fill();
+  // Fog of war
+  ctx.fillStyle="rgba(0,0,0,0.85)";
+  ctx.beginPath();
+  ctx.rect(0,0,canvas.width,canvas.height);
+  ctx.arc(player.x*TILE-camX,player.y*TILE-camY,80,0,Math.PI*2,true);
+  ctx.fill();
 
- ctx.fillStyle="#3b82f6";
- ctx.fillRect(player.x*TILE-camX-4,player.y*TILE-camY-4,8,8);
- ctx.fillStyle="white";
- ctx.fillText("Abderrahmane",player.x*TILE-camX-25,player.y*TILE-camY-10);
+  // Player (Abderrahmane)
+  ctx.fillStyle="#3b82f6";
+  ctx.fillRect(player.x*TILE-camX-4,player.y*TILE-camY-4,8,8);
+  ctx.fillStyle="#3b82f6";
+  ctx.font="10px monospace";
+  ctx.fillText("Abderrahmane",player.x*TILE-camX-28,player.y*TILE-camY-10);
 
- if(!found){
-  ctx.fillStyle="#22c55e";
-  ctx.fillRect(friend.x*TILE-camX-4,friend.y*TILE-camY-4,8,8);
-  ctx.fillStyle="white";
-  ctx.fillText("Sofiane",friend.x*TILE-camX-15,friend.y*TILE-camY-10);
- }
+  // Friend (Sofiane) - only if not yet found
+  if(!found){
+    ctx.fillStyle="#22c55e";
+    ctx.fillRect(friend.x*TILE-camX-4,friend.y*TILE-camY-4,8,8);
+    ctx.fillStyle="#22c55e";
+    ctx.fillText("Sofiane",friend.x*TILE-camX-18,friend.y*TILE-camY-10);
+  }
 }
 
-function restartGame(){dialogueBox.style.display='none';zooming=false;generate()}
-
-generate();update();
+generate();
+update();
 </script>
 </body>
 </html>
