@@ -3,69 +3,83 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pixel Friendship Quest v7</title>
+<title>Pixel Friendship Quest v8</title>
 <style>
 body{margin:0;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;background:#020617;color:white;font-family:monospace}
 canvas{border:3px solid #fff;image-rendering:pixelated;box-shadow:0 0 20px #fff}
-#ui{text-align:center;margin-top:10px}
 #dialogueBox{
  position:absolute;bottom:20px;width:420px;
- background:rgba(0,0,0,0.85);
+ background:rgba(0,0,0,0.9);
  border:2px solid #fff;padding:10px;
  display:none
 }
 #speaker{font-weight:bold;margin-bottom:5px}
-button{margin-top:6px;padding:6px 12px;background:#2563eb;color:#fff;border:none;cursor:pointer}
+#portrait{width:40px;height:40px;display:inline-block;margin-right:8px}
 </style>
 </head>
 <body>
 <canvas id="game" width="480" height="360"></canvas>
 <div id="dialogueBox">
+<div style="display:flex;align-items:center">
+<div id="portrait"></div>
 <div id="speaker"></div>
+</div>
 <div id="dialogueText"></div>
 <div style="font-size:12px;opacity:.7">(click to continue)</div>
-</div>
-<div id="ui">
-<div id="status"></div>
-<button onclick="restartGame()">Restart</button>
 </div>
 <script>
 const canvas=document.getElementById('game');
 const ctx=canvas.getContext('2d');
-const statusEl=document.getElementById('status');
 const dialogueBox=document.getElementById('dialogueBox');
 const dialogueTextEl=document.getElementById('dialogueText');
 const speakerEl=document.getElementById('speaker');
+const portraitEl=document.getElementById('portrait');
 
 const TILE=16,W=32,H=24;
-let map,player,friend,found,particles=[],trail=[];
+let map,player,friend,found,trail=[];
 
-const dialogueLines=[
- {speaker:"Sofiane",text:"💙 Abderrahmane... you found me."},
- {speaker:"Abderrahmane",text:"Of course I did. I’d drift across any maze for you."},
- {speaker:"Sofiane",text:"🏎️ Haha... that’s why you’re the best."},
- {speaker:"Sofiane",text:"🎂 Happy early birthday, legend."}
+// multiple dialogue variations (more playful)
+const dialogues=[
+[
+ {speaker:"Sofiane",text:"There you are, took you long enough 😄"},
+ {speaker:"Abderrahmane",text:"Had to take the scenic route... drifting style."},
+ {speaker:"Sofiane",text:"😂 Of course you did."},
+ {speaker:"Sofiane",text:"By the way... happy early birthday 🎉"}
+],
+[
+ {speaker:"Sofiane",text:"I knew you'd find me eventually."},
+ {speaker:"Abderrahmane",text:"Maze had no chance."},
+ {speaker:"Sofiane",text:"Confidence level: 100%"},
+ {speaker:"Sofiane",text:"Birthday coming up... ready? 😎"}
+],
+[
+ {speaker:"Sofiane",text:"Bro you actually made it."},
+ {speaker:"Abderrahmane",text:"Was there ever any doubt?"},
+ {speaker:"Sofiane",text:"A little bit 😂"},
+ {speaker:"Sofiane",text:"Anyway, early happy birthday 🏎️"}
+]
 ];
 
-let currentLine=0, charIndex=0, typing=true;
-
-function beep(){const a=new (window.AudioContext||window.webkitAudioContext)();const o=a.createOscillator();o.connect(a.destination);o.start();o.stop(a.currentTime+0.05)}
+let currentDialogue=[], currentLine=0, charIndex=0, typing=true;
+let typingSpeed=2;
 
 function startDialogue(){
+ currentDialogue = dialogues[Math.random()*dialogues.length|0];
  dialogueBox.style.display='block';
  currentLine=0;charIndex=0;typing=true;
+ zooming=true;
 }
 
 canvas.addEventListener('click',()=>{
  if(!found) return;
  if(typing){
-   // skip typing
-   dialogueTextEl.innerHTML=dialogueLines[currentLine].text;
+   dialogueTextEl.innerHTML=currentDialogue[currentLine].text;
    typing=false;
  } else {
    currentLine++;
-   if(currentLine>=dialogueLines.length){
+   if(currentLine>=currentDialogue.length){
      dialogueBox.style.display='none';
+     zooming=false;
    } else {
      charIndex=0;typing=true;
    }
@@ -93,7 +107,7 @@ function generate(){
   if(d>10)far.push({x,y});
  }
  friend=far[Math.random()*far.length|0];
- found=false;particles=[];trail=[];
+ found=false;trail=[];
 }
 
 let keys={};
@@ -108,13 +122,15 @@ function move(dx,dy){
  }
 }
 
-let camX=0,camY=0;
+let camX=0,camY=0,zoom=1,zooming=false;
 
 function update(){
- if(keys['w']||keys['ArrowUp'])move(0,-0.15);
- if(keys['s']||keys['ArrowDown'])move(0,0.15);
- if(keys['a']||keys['ArrowLeft'])move(-0.15,0);
- if(keys['d']||keys['ArrowRight'])move(0.15,0);
+ if(!found){
+  if(keys['w']||keys['ArrowUp'])move(0,-0.15);
+  if(keys['s']||keys['ArrowDown'])move(0,0.15);
+  if(keys['a']||keys['ArrowLeft'])move(-0.15,0);
+  if(keys['d']||keys['ArrowRight'])move(0.15,0);
+ }
 
  let dist=Math.hypot(player.x-friend.x,player.y-friend.y);
 
@@ -123,30 +139,33 @@ function update(){
   startDialogue();
  }
 
- // typing effect
+ // typing effect with variable speed
  if(found && typing){
-   let line=dialogueLines[currentLine];
+   let line=currentDialogue[currentLine];
    speakerEl.textContent=line.speaker;
+   portraitEl.style.background = line.speaker==="Abderrahmane"?"#3b82f6":"#22c55e";
    if(charIndex < line.text.length){
-     dialogueTextEl.innerHTML=line.text.slice(0,charIndex);
-     charIndex++;
-     beep();
-   } else {
-     typing=false;
-   }
+     if(Math.random()<0.7){
+       dialogueTextEl.innerHTML=line.text.slice(0,charIndex);
+       charIndex++;
+     }
+   } else typing=false;
  }
 
  trail.forEach(t=>t.life-=0.03);
  trail=trail.filter(t=>t.life>0);
 
+ // camera + zoom
  camX+=((player.x*TILE-canvas.width/2)-camX)*0.1;
  camY+=((player.y*TILE-canvas.height/2)-camY)*0.1;
+ if(zooming) zoom+= (1.2-zoom)*0.05; else zoom+= (1-zoom)*0.05;
 
  draw();
  requestAnimationFrame(update);
 }
 
 function draw(){
+ ctx.setTransform(zoom,0,0,zoom,0,0);
  ctx.fillRect(0,0,canvas.width,canvas.height);
 
  for(let y=0;y<H;y++){
@@ -157,34 +176,28 @@ function draw(){
   }
  }
 
- // trail
  ctx.fillStyle="#38bdf8";
  trail.forEach(t=>{ctx.globalAlpha=t.life;ctx.fillRect(t.x*TILE-camX,t.y*TILE-camY,4,4);ctx.globalAlpha=1});
 
- // fog
  ctx.fillStyle="rgba(0,0,0,0.85)";
  ctx.beginPath();ctx.rect(0,0,canvas.width,canvas.height);
  ctx.arc(player.x*TILE-camX,player.y*TILE-camY,80,0,Math.PI*2,true);
  ctx.fill();
 
- // player
  ctx.fillStyle="#3b82f6";
  ctx.fillRect(player.x*TILE-camX-4,player.y*TILE-camY-4,8,8);
  ctx.fillStyle="white";
  ctx.fillText("Abderrahmane",player.x*TILE-camX-25,player.y*TILE-camY-10);
 
- // friend
  if(!found){
   ctx.fillStyle="#22c55e";
   ctx.fillRect(friend.x*TILE-camX-4,friend.y*TILE-camY-4,8,8);
   ctx.fillStyle="white";
   ctx.fillText("Sofiane",friend.x*TILE-camX-15,friend.y*TILE-camY-10);
  }
-
- statusEl.textContent=found?"Talking...":"Explore carefully...";
 }
 
-function restartGame(){dialogueBox.style.display='none';generate()}
+function restartGame(){dialogueBox.style.display='none';zooming=false;generate()}
 
 generate();update();
 </script>
