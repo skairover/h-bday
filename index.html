@@ -6,46 +6,88 @@
 <title>مسعى الصداقة — عيد ميلاد</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  min-height:100vh;background:#020617;color:#fff;font-family:monospace;overflow:hidden;
+html,body{width:100%;height:100%;overflow:hidden;font-family:monospace;background:#020617;color:#fff}
+body{display:flex;flex-direction:column;align-items:center;justify-content:center}
+
+#gw{
+  position:relative;
+  width:min(90vw, 133vh);
+  aspect-ratio:4/3;
+  border:3px solid #fff;
+  box-shadow:0 0 30px rgba(255,255,255,.18);
 }
-#gw{position:relative;width:480px;height:360px;border:3px solid #fff;box-shadow:0 0 30px rgba(255,255,255,.18)}
-#game{display:block;width:480px;height:360px;image-rendering:pixelated}
+
+#game{
+  display:block;
+  width:100%;
+  height:100%;
+  image-rendering:pixelated;
+}
+
+/* ── RESPONSIVE FONT SYSTEM ── */
+/* Uses clamp(min, preferred, max) so text scales between mobile & desktop */
 
 /* MISSION SCREEN */
-#ms{position:absolute;inset:0;background:rgba(2,6,23,.97);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:18px 24px}
-#ms h2{font-size:18px;color:#facc15;letter-spacing:3px;text-shadow:0 0 12px #facc15}
-.badge{font-size:10px;color:#64748b;border:1px solid #334155;padding:2px 12px;letter-spacing:1px}
-.mbody{font-size:12px;color:#cbd5e1;line-height:2.2;text-align:center;max-width:400px;font-family:'Segoe UI',Tahoma,Arial,sans-serif}
-.ctrl{font-size:10px;color:#475569;font-family:monospace}
-.btn{background:#facc15;color:#020617;border:none;font-family:'Segoe UI',Tahoma,Arial,sans-serif;font-size:13px;font-weight:bold;padding:9px 26px;cursor:pointer;letter-spacing:1px;margin-top:4px;transition:background .15s}
+#ms{position:absolute;inset:0;background:rgba(2,6,23,.97);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(6px,1.5vw,14px);padding:clamp(12px,3vw,28px)}
+#ms h2{font-size:clamp(15px,3.5vw,22px);color:#facc15;letter-spacing:0.2em;text-shadow:0 0 12px #facc15}
+.mbody{font-size:clamp(11px,2.2vw,15px);color:#cbd5e1;line-height:1.7;text-align:center;max-width:90%;font-family:'Segoe UI',Tahoma,Arial,sans-serif}
+.ctrl{font-size:clamp(10px,1.8vw,13px);color:#475569;font-family:monospace}
+.btn{background:#facc15;color:#020617;border:none;font-family:'Segoe UI',Tahoma,Arial,sans-serif;font-size:clamp(12px,2.5vw,16px);font-weight:bold;padding:clamp(7px,1.5vw,11px) clamp(16px,4vw,28px);cursor:pointer;letter-spacing:0.05em;margin-top:clamp(2px,0.5vw,6px);transition:background .15s}
 .btn:hover{background:#fde047}
-.gbtn{background:transparent;color:#475569;border:1px solid #334155;font-family:'Segoe UI',Tahoma,Arial,sans-serif;font-size:10px;padding:5px 16px;cursor:pointer;transition:all .15s}
+.gbtn{background:transparent;color:#475569;border:1px solid #334155;font-family:'Segoe UI',Tahoma,Arial,sans-serif;font-size:clamp(10px,2vw,13px);padding:clamp(5px,1vw,8px) clamp(12px,3vw,20px);cursor:pointer;transition:all .15s}
 .gbtn:hover{color:#94a3b8;border-color:#475569}
 
 /* DIALOGUE */
-#dlg{position:absolute;bottom:8px;left:8px;right:8px;background:rgba(0,0,0,.94);border:2px solid #fff;padding:10px 13px;display:none;direction:rtl}
-#dlgh{display:flex;align-items:center;gap:9px;margin-bottom:6px;flex-direction:row-reverse}
-#dlgp{width:34px;height:34px;border:1px solid rgba(255,255,255,.25);flex-shrink:0}
-#dlgs{font-weight:bold;font-size:13px;font-family:'Segoe UI',Tahoma,Arial,sans-serif}
-#dlgt{font-size:13px;line-height:1.9;color:#e2e8f0;min-height:18px;font-family:'Segoe UI',Tahoma,Arial,sans-serif}
-#dlghi{font-size:10px;color:#475569;margin-top:5px;text-align:left;font-family:monospace;direction:ltr}
+#dlg{position:absolute;bottom:clamp(4px,1.5vw,10px);left:clamp(4px,1.5vw,10px);right:clamp(4px,1.5vw,10px);background:rgba(0,0,0,.94);border:2px solid #fff;padding:clamp(8px,2vw,14px);display:none;direction:rtl;border-radius:6px}
+#dlgh{display:flex;align-items:center;gap:clamp(8px,2vw,14px);margin-bottom:clamp(4px,1vw,8px);flex-direction:row-reverse}
+#dlgp{width:clamp(28px,6vw,40px);height:clamp(28px,6vw,40px);border:1px solid rgba(255,255,255,.25);flex-shrink:0}
+#dlgs{font-weight:bold;font-size:clamp(12px,2.5vw,16px);font-family:'Segoe UI',Tahoma,Arial,sans-serif}
+#dlgt{font-size:clamp(11px,2.2vw,15px);line-height:1.55;color:#e2e8f0;min-height:1em;font-family:'Segoe UI',Tahoma,Arial,sans-serif}
+#dlghi{font-size:clamp(9px,1.6vw,12px);color:#475569;margin-top:clamp(3px,0.8vw,6px);text-align:left;font-family:monospace;direction:ltr}
 
 /* CAKE POPUP */
-#ckp{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(2,6,23,.96);border:2px solid #facc15;padding:13px 20px;text-align:center;pointer-events:none;display:none;z-index:5;min-width:200px;max-width:290px;direction:rtl}
-.cpt{color:#facc15;font-size:14px;margin-bottom:5px;font-family:'Segoe UI',Tahoma,Arial,sans-serif}
-.cpm{font-size:12px;color:#cbd5e1;line-height:2;white-space:pre-line;font-family:'Segoe UI',Tahoma,Arial,sans-serif}
+#ckp{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(2,6,23,.96);border:2px solid #facc15;padding:clamp(10px,2.5vw,18px) clamp(14px,3.5vw,24px);text-align:center;pointer-events:none;display:none;z-index:5;min-width:40%;max-width:82%;direction:rtl}
+.cpt{color:#facc15;font-size:clamp(13px,3vw,18px);margin-bottom:clamp(4px,1vw,8px);font-family:'Segoe UI',Tahoma,Arial,sans-serif}
+.cpm{font-size:clamp(11px,2.2vw,14px);color:#cbd5e1;line-height:1.6;white-space:pre-line;font-family:'Segoe UI',Tahoma,Arial,sans-serif}
 
 /* CUTSCENE */
 #cs{position:absolute;inset:0;background:#000;display:none;align-items:center;justify-content:center;flex-direction:column;text-align:center}
 #csc{position:absolute;inset:0;pointer-events:none}
-#cscon{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:7px}
-.csh{font-size:28px;color:#facc15;letter-spacing:2px;animation:glow 1s infinite alternate;font-family:'Segoe UI',Tahoma,Arial,sans-serif}
-.csn{font-size:20px;color:#3b82f6;letter-spacing:3px;text-shadow:0 0 14px #3b82f6;font-family:'Segoe UI',Tahoma,Arial,sans-serif}
-.csf{font-size:11px;color:#475569;margin-top:2px;font-family:'Segoe UI',Tahoma,Arial,sans-serif}
-.csmsg{font-size:12px;color:#94a3b8;line-height:2.2;max-width:320px;margin:4px 0;font-family:'Segoe UI',Tahoma,Arial,sans-serif;direction:rtl}
-@keyframes glow{from{text-shadow:0 0 10px #facc15}to{text-shadow:0 0 28px #facc15,0 0 55px #f97316}}
+#cscon{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:clamp(5px,1.2vw,10px);padding:clamp(8px,2vw,16px)}
+.csh{font-size:clamp(18px,5vw,30px);color:#facc15;letter-spacing:0.1em;animation:glow 1s infinite alternate;font-family:'Segoe UI',Tahoma,Arial,sans-serif}
+.csn{font-size:clamp(14px,3.5vw,22px);color:#3b82f6;letter-spacing:0.1em;text-shadow:0 0 14px #3b82f6;font-family:'Segoe UI',Tahoma,Arial,sans-serif}
+.csf{font-size:clamp(10px,2vw,13px);color:#475569;margin-top:2px;font-family:'Segoe UI',Tahoma,Arial,sans-serif}
+.csmsg{font-size:clamp(11px,2.2vw,14px);color:#94a3b8;line-height:1.65;max-width:90%;margin:clamp(3px,0.8vw,6px) 0;font-family:'Segoe UI',Tahoma,Arial,sans-serif;direction:rtl}
+@keyframes glow{from{text-shadow:0 0 8px #facc15}to{text-shadow:0 0 20px #facc15,0 0 40px #f97316}}
+
+/* ── TOUCH D-PAD ── */
+#dpad{
+  position:absolute;
+  bottom:clamp(6px,2vw,14px);
+  left:clamp(6px,2vw,14px);
+  display:none; /* shown only on touch */
+  grid-template-columns:repeat(3,1fr);
+  grid-template-rows:repeat(3,1fr);
+  width:clamp(90px,22vw,130px);
+  height:clamp(90px,22vw,130px);
+  gap:3px;
+  z-index:10;
+  user-select:none;
+  -webkit-user-select:none;
+}
+.dp{
+  background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.22);
+  border-radius:4px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:clamp(14px,4vw,22px);
+  cursor:pointer;
+  transition:background .08s;
+  -webkit-tap-highlight-color:transparent;
+  touch-action:none;
+}
+.dp:active,.dp.pressed{background:rgba(255,255,255,.32)}
+.dp.blank{background:transparent;border:none;pointer-events:none}
 </style>
 </head>
 <body>
@@ -55,7 +97,7 @@ body{
   <div id="ms">
     <h2>📋 بيانُ المسعى</h2>
     <div class="mbody" id="msbody"></div>
-    <div class="ctrl">🕹 WASD أو أسهم الاتجاه للتحرك</div>
+    <div class="ctrl" id="ctrlhint">🕹 WASD أو أسهم الاتجاه للتحرك</div>
     <button class="btn" id="sbtn">▶ انطلق</button>
     <button class="gbtn" id="rbtn" style="display:none">↺ عُد من جديد</button>
   </div>
@@ -82,6 +124,19 @@ body{
       <button class="btn" id="pabtn" style="margin-top:8px">↺ عُد من جديد</button>
     </div>
   </div>
+
+  <!-- Touch D-pad: up=row1col2, left=row2col1, blank=row2col2, right=row2col3, down=row3col2 -->
+  <div id="dpad">
+    <div class="dp blank"></div>
+    <div class="dp" id="dp-up">▲</div>
+    <div class="dp blank"></div>
+    <div class="dp" id="dp-left">◀</div>
+    <div class="dp blank"></div>
+    <div class="dp" id="dp-right">▶</div>
+    <div class="dp blank"></div>
+    <div class="dp" id="dp-down">▼</div>
+    <div class="dp blank"></div>
+  </div>
 </div>
 
 <script>
@@ -104,7 +159,6 @@ const sfx = {
   step:    () => tone(55 + Math.random()*25, 0.04, 'square', 0.02),
   found:   () => [523,659,784,1047].forEach((f,i) => tone(f,0.18,'square',0.1,i*0.12)),
   cake:    () => [523,587,659,784,880,1047].forEach((f,i) => tone(f,0.14,'triangle',0.1,i*0.075)),
-  decoy:   () => [440,330,220].forEach((f,i) => tone(f,0.12,'sawtooth',0.08,i*0.1)),
   fanfare: () => [[523,.12],[659,.12],[784,.12],[1047,.28],[880,.12],[1047,.55]]
                .reduce((acc,[f,d])=>{ tone(f,d,'square',0.13,acc); return acc+d; },0),
 };
@@ -115,13 +169,10 @@ function mstop(){}
 // ── CONSTANTS ──────────────────────────────────────────────────────────────────
 const CV=document.getElementById('game'), ctx=CV.getContext('2d');
 const CW=480, CH=360, TILE=16, W=31, H=23;
-
 const MAZE_CFG={minDist:13};
 
-// Classical Fusha cake message
-const CAKE_MSG='تركها سفيانُ هديةً في خبايا الدرب 🎂\n«احفظ لي نصيباً منها يا رفيقَ ';
+const CAKE_MSG='تركها سفيانُ هديةً في خبايا الدرب 🎂\n«احفظ لي نصيباً منها يا رفيقَ العمر»';
 
-// Classical poetic Arabic dialogues — 3 variants, brotherhood tone
 const DLGS=[
   [
     {s:'سفيان',t:'ها قد جئت… بعد طول انتظار، وبعد صبرٍ واختبار.'},
@@ -139,11 +190,11 @@ const DLGS=[
     {s:'سفيان',t:'لبثتُ هنا زمنًا… حتى خِلتُ أن لا مخرج، ولا سبيل.'},
     {s:'عبد الرحمن',t:'للصبر نهاية، وللأمر تمام، ولكل ضيقٍ انفراج.'},
     {s:'سفيان',t:'نِعم ما قلت، ونِعم ما فعلت.'},
-    {s:'سفيان',t:'بارك الله في عمرك يا أخي… وجعل لك من كل همٍّ فرجًا، ومن كل ضيقٍ مخرجًا، ومن كل أمرٍ رشدًا.'}
+    {s:'سفيان',t:'بارك الله في عمرك يا أخي… وجعل لك من كل همٍّ فرجًا، ومن كل ضيقٍ مخرجًا، ومن كل أمرٍ رشدًا.'}
   ],
 ];
 
-const SC={Sofiane:'#22c55e',Abderrahmane:'#3b82f6'};
+const SC={'سفيان':'#22c55e','عبد الرحمن':'#3b82f6'};
 
 // ── STATE ──────────────────────────────────────────────────────────────────────
 let STATE='MISSION';
@@ -151,8 +202,36 @@ let map, player, friend, cake;
 let found=false, cakeFound=false;
 let trail=[];
 let camX=0, camY=0, zoom=1;
-let keys={}, stepC=0;
+let keys={}, touch={up:false,down:false,left:false,right:false}, stepC=0;
 let curDlg=[], dlgL=0, dlgC=0, dlgTyp=false;
+
+// ── TOUCH DETECTION & D-PAD ────────────────────────────────────────────────────
+const isTouchDevice = () => window.matchMedia('(hover: none) and (pointer: coarse)').matches || ('ontouchstart' in window);
+
+function setupDpad(){
+  const dpad = document.getElementById('dpad');
+  if(isTouchDevice()){
+    dpad.style.display='grid';
+    document.getElementById('ctrlhint').textContent='🕹 استخدم الأزرار أدناه للتحرك';
+  }
+
+  function bindBtn(id, key){
+    const el = document.getElementById(id);
+    const press = e => { e.preventDefault(); touch[key]=true; el.classList.add('pressed'); };
+    const release = e => { e.preventDefault(); touch[key]=false; el.classList.remove('pressed'); };
+    el.addEventListener('touchstart', press, {passive:false});
+    el.addEventListener('touchend',   release, {passive:false});
+    el.addEventListener('touchcancel',release, {passive:false});
+    // mouse fallback for desktop testing
+    el.addEventListener('mousedown', press);
+    el.addEventListener('mouseup',   release);
+    el.addEventListener('mouseleave',release);
+  }
+  bindBtn('dp-up',    'up');
+  bindBtn('dp-down',  'down');
+  bindBtn('dp-left',  'left');
+  bindBtn('dp-right', 'right');
+}
 
 // ── MAZE GENERATION ────────────────────────────────────────────────────────────
 function genMaze(){
@@ -179,7 +258,6 @@ function genMaze(){
   found=false;
 
   const used=new Set([`${friend.x},${friend.y}`,'1,1']);
-
   const cc=open.filter(p=>!used.has(`${p.x},${p.y}`)&&Math.hypot(p.x-1,p.y-1)>4);
   cake=cc.length?cc[Math.random()*cc.length|0]:null;
   cakeFound=false; trail=[];
@@ -210,7 +288,6 @@ function drawCake(x,y){
 function drawPixelPortrait(){
   const c=document.getElementById('cspa'),p=c.getContext('2d');
   p.clearRect(0,0,110,72);
-  // Abderrahmane — blue (left)
   p.fillStyle='#3b82f6';
   p.fillRect(12,10,14,11);p.fillRect(13,21,12,13);
   p.fillRect(7,22,6,9);p.fillRect(25,22,6,9);
@@ -218,7 +295,6 @@ function drawPixelPortrait(){
   p.fillStyle='#fff';p.fillRect(16,12,2,2);p.fillRect(21,12,2,2);
   p.fillStyle='#facc15';p.beginPath();p.moveTo(19,10);p.lineTo(15,1);p.lineTo(23,1);p.closePath();p.fill();
   p.fillStyle='#f97316';p.fillRect(18,3,2,2);
-  // Sofiane — green (right)
   p.fillStyle='#22c55e';
   p.fillRect(84,10,14,11);p.fillRect(85,21,12,13);
   p.fillRect(79,22,6,9);p.fillRect(97,22,6,9);
@@ -284,6 +360,7 @@ function advDlg(){
 }
 CV.addEventListener('click',advDlg);
 dlgEl.addEventListener('click',advDlg);
+CV.addEventListener('touchend', e=>{ e.preventDefault(); advDlg(); }, {passive:false});
 
 // ── CUTSCENE ───────────────────────────────────────────────────────────────────
 let confetti=[], csRunning=false;
@@ -385,7 +462,6 @@ function draw(){
   ctx.fillStyle='#3b82f6'; ctx.font='9px monospace'; ctx.textAlign='center';
   ctx.fillText('Abderrahmane',px,py-20); ctx.textAlign='left';
 
-  // Fog of war
   ctx.fillStyle='rgba(0,0,0,.88)';
   ctx.beginPath(); ctx.rect(0,0,CW,CH);
   ctx.arc(px,py,74,0,Math.PI*2,true); ctx.fill();
@@ -410,10 +486,10 @@ function loop(t){
   const dt=Math.min((t-lastT)/1000,0.05); lastT=t;
 
   if(STATE==='PLAYING'){
-    if(keys['w']||keys['ArrowUp'])    move(0,-.12);
-    if(keys['s']||keys['ArrowDown'])  move(0,.12);
-    if(keys['a']||keys['ArrowLeft'])  move(-.12,0);
-    if(keys['d']||keys['ArrowRight']) move(.12,0);
+    if(keys['w']||keys['ArrowUp']   ||touch.up)    move(0,-.12);
+    if(keys['s']||keys['ArrowDown'] ||touch.down)  move(0,.12);
+    if(keys['a']||keys['ArrowLeft'] ||touch.left)  move(-.12,0);
+    if(keys['d']||keys['ArrowRight']||touch.right) move(.12,0);
 
     if(cake&&!cakeFound&&Math.hypot(player.x-cake.x,player.y-cake.y)<0.9){
       cakeFound=true;
@@ -453,7 +529,16 @@ function loop(t){
 document.addEventListener('keydown',e=>{keys[e.key]=true;if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key))e.preventDefault();});
 document.addEventListener('keyup',e=>keys[e.key]=false);
 
+// ── CANVAS RESIZE ─────────────────────────────────────────────────────────────
+function resizeCanvas(){
+  const gw=document.getElementById('gw');
+  const cv=document.getElementById('game');
+  cv.width=480; cv.height=360; // keep internal resolution fixed
+}
+window.addEventListener('resize', resizeCanvas);
+
 // ── INIT ───────────────────────────────────────────────────────────────────────
+setupDpad();
 showMission();
 requestAnimationFrame(t=>{lastT=t;requestAnimationFrame(loop);});
 </script>
